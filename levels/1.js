@@ -131,7 +131,7 @@ var map = {
 	}, {
 		type: "group",
 		x: 3,
-		y: 7.59,
+		y: 8,
 		z: 0,
 		children: [{
 			materialId: "m1"

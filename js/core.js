@@ -86,11 +86,28 @@ core.createStair = function(item, g, m, container) {
 		container.add(c);
 	}
 };
+core.Obj={};
+core.Obj.Turnable=function(options){
+	let STEP = game.settings.blockSize;
+	let group = new THREE.Group();
+	this.object=group;
+	var axisG=new THREE.BoxBufferGeometry(STEP, STEP/4, STEP/4);
+	
+}
+
+core.createTurntable=function(item, container){
+	let STEP = game.settings.blockSize;
+	let group = new THREE.Group();
+	group.position.set(item.x * STEP || 0, item.y  * STEP || 0, item.z * STEP || 0);
+	group.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
+	container.add(group);
+	var gz=new THREE.BoxBufferGeometry(STEP, STEP/4, STEP/4);
+}
 
 core.createGroup = function(item, container) {
 	let STEP = game.settings.blockSize;
 	let group = new THREE.Group();
-	group.position.set(item.x * STEP || 0, (item.y + 5 / 12) * STEP || 0, item.z * STEP || 0);
+	group.position.set(item.x * STEP || 0, item.y * STEP || 0, item.z * STEP || 0);
 	group.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	container.add(group);
 	let cubeGeometry = new THREE.BoxBufferGeometry(STEP, STEP, STEP);
