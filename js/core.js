@@ -87,8 +87,44 @@ core.createStair = function(item, g, m, container) {
 	}
 };
 
-core.createGroup=function(item,container){
-	
+core.createGroup = function(item, container) {
+	let STEP = game.settings.blockSize;
+	let group = new THREE.Group();
+	group.position.set(item.x * STEP || 0, (item.y + 5 / 12) * STEP || 0, item.z * STEP || 0);
+	group.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
+	container.add(group);
+	let cubeGeometry = new THREE.BoxBufferGeometry(STEP, STEP, STEP);
+	let triangleGeometry = new THREE.BoxGeometry(STEP, STEP, STEP);
+	let stickGeomerty = new THREE.BoxBufferGeometry(STEP / 10, STEP, STEP / 10);
+	triangleGeometry.vertices = [new THREE.Vector3(STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1)];
+	triangleGeometry.mergeVertices();
+	for(let child of item.children) {
+		let material;
+		if(child.materialId) {
+			material = core.map.materials[child.materialId];
+		} else {
+			for(let i in core.map.materials) {
+				material = core.map.materials[i];
+				break;
+			}
+		}
+		if(child.type == "cube") {
+			core.createCube(child, cubeGeometry, material, group);
+		} else if(child.type == "plane") {
+			core.createPlane(child, cubeGeometry, material, group);
+		} else if(child.type == "tri") {
+			core.createTri(child, triangleGeometry, material, group);
+		} else if(child.type == "stick") {
+			core.createStick(child, stickGeomerty, material, group);
+		} else if(child.type == "stair") {
+			core.createStair(child, triangleGeometry, material, group);
+		} else if(child.type == "group") {
+			core.createGroup(child, group);
+		} else {
+			core.createCube(child, cubeGeometry, material, group);
+		}
+	}
+	console.log(group)
 };
 core.initMapBlocks = function(gameWorld) {
 	let STEP = game.settings.blockSize;
@@ -97,8 +133,8 @@ core.initMapBlocks = function(gameWorld) {
 	let stickGeomerty = new THREE.BoxBufferGeometry(STEP / 10, STEP, STEP / 10);
 	triangleGeometry.vertices = [new THREE.Vector3(STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1)];
 	triangleGeometry.mergeVertices();
-	for(let i in core.map.blocks) {
-		let item = core.map.blocks[i];
+	for(let item of core.map.blocks) {
+		//let item = core.map.blocks[i];
 		let material;
 		if(item.materialId) {
 			material = core.map.materials[item.materialId];
@@ -108,21 +144,20 @@ core.initMapBlocks = function(gameWorld) {
 				break;
 			}
 		}
-
 		if(item.type == "cube") {
-			core.createCube(item, cubeGeometry, material,gameWorld.scene);
+			core.createCube(item, cubeGeometry, material, gameWorld.scene);
 		} else if(item.type == "plane") {
-			core.createPlane(item, cubeGeometry, material,gameWorld.scene);
+			core.createPlane(item, cubeGeometry, material, gameWorld.scene);
 		} else if(item.type == "tri") {
-			core.createTri(item, triangleGeometry, material,gameWorld.scene);
+			core.createTri(item, triangleGeometry, material, gameWorld.scene);
 		} else if(item.type == "stick") {
-			core.createStick(item, stickGeomerty, material,gameWorld.scene);
+			core.createStick(item, stickGeomerty, material, gameWorld.scene);
 		} else if(item.type == "stair") {
-			core.createStair(item, triangleGeometry, material,gameWorld.scene);
+			core.createStair(item, triangleGeometry, material, gameWorld.scene);
 		} else if(item.type == "group") {
 			core.createGroup(item, gameWorld.scene);
 		} else {
-			core.createCube(item, cubeGeometry, material,gameWorld.scene);
+			core.createCube(item, cubeGeometry, material, gameWorld.scene);
 		}
 	}
 };
