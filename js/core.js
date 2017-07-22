@@ -106,17 +106,17 @@ core.initMapBlocks = function(gameWorld) {
 		}
 
 		if(item.type == "cube") {
-			core.createCube(item, cubeGeometry, material);
+			core.createCube(item, cubeGeometry, material,gameWorld.scene);
 		} else if(item.type == "plane") {
-			core.createPlane(item, cubeGeometry, material);
+			core.createPlane(item, cubeGeometry, material,gameWorld.scene);
 		} else if(item.type == "tri") {
-			core.createTri(item, triangleGeometry, material);
+			core.createTri(item, triangleGeometry, material,gameWorld.scene);
 		} else if(item.type == "stick") {
-			core.createStick(item, stickGeomerty, material);
+			core.createStick(item, stickGeomerty, material,gameWorld.scene);
 		} else if(item.type == "stair") {
-			core.createStair(item, triangleGeometry, material);
+			core.createStair(item, triangleGeometry, material,gameWorld.scene);
 		} else {
-			core.createCube(item, cubeGeometry, material);
+			core.createCube(item, cubeGeometry, material,gameWorld.scene);
 		}
 	}
 };
