@@ -86,22 +86,96 @@ core.createStair = function(item, g, m, container) {
 		container.add(c);
 	}
 };
-core.Obj={};
-core.Obj.Turnable=function(options){
+core.Obj = {};
+core.Obj.Turntable = function(options) {
 	let STEP = game.settings.blockSize;
 	let group = new THREE.Group();
-	this.object=group;
-	var axisG=new THREE.BoxBufferGeometry(STEP, STEP/4, STEP/4);
+	group.position.set(options.x * STEP || 0, options.y * STEP || 0, options.z * STEP || 0);
+	group.rotation.set(options.rx || 0, options.ry || 0, options.rz || 0);
+	this.object = group;
+	let axisG = new THREE.BoxBufferGeometry(STEP, STEP / 4, STEP / 4);
+	let axisM;
+	if(options.axisMaterial) {
+		axisM = options.axisMaterial;
+	} else {
+		for(let i in core.map.materials) {
+			axisM = core.map.materials[i];
+			break;
+		}
+	}
+	let axis = new THREE.Mesh(axisG, axisM);
+	group.add(axis);
+
+	let hoopG = new THREE.CylinderBufferGeometry(STEP / 2.3, STEP / 2.3, STEP, 32);
+	let hoopM;
+	if(options.axisMaterial) {
+		hoopM = options.hoopMaterial;
+	} else {
+		for(let i in core.map.materials) {
+			hoopM = core.map.materials[i];
+			break;
+		}
+	}
+	var hoop = new THREE.Mesh(hoopG, hoopM);
+	hoop.position.x=STEP;
+	hoop.rotation.z=Math.PI/2;
+	group.add(hoop);
 	
+	let rodG = new THREE.CylinderBufferGeometry(STEP / 6, STEP / 6, STEP*2.5, 32);
+	let rodM;
+	if(options.axisMaterial) {
+		rodM = options.rodMaterial;
+	} else {
+		for(let i in core.map.materials) {
+			rodM = core.map.materials[i];
+			break;
+		}
+	}
+	var rod1 = new THREE.Mesh(rodG, rodM);
+	rod1.position.x=STEP;
+	group.add(rod1);
+	
+	var rod2 = rod1.clone();
+	rod2.position.x=STEP;
+	rod2.rotation.x=Math.PI/2;
+	group.add(rod2);
+	
+	let poleG = new THREE.CylinderBufferGeometry(STEP / 4, STEP / 4, STEP*0.5, 32);
+	let poleM;
+	if(options.axisMaterial) {
+		poleM = options.poleMaterial;
+	} else {
+		for(let i in core.map.materials) {
+			poleM = core.map.materials[i];
+			break;
+		}
+	}
+	var pole1 = new THREE.Mesh(poleG, poleM);
+	pole1.position.x=STEP;
+	pole1.position.y=STEP*1.5;
+	group.add(pole1);
+	var pole2 = pole1.clone();
+	pole2.position.x=STEP;
+	pole2.position.y=-STEP*1.5;
+	group.add(pole2);
+	var pole3 = pole1.clone();
+	pole3.position.x=STEP;
+	pole3.position.y=0;
+	pole3.position.z=STEP*1.5;
+	pole3.rotation.x=Math.PI/2;
+	group.add(pole3);
+	var pole3 = pole1.clone();
+	pole3.position.x=STEP;
+	pole3.position.y=0;
+	pole3.position.z=-STEP*1.5;
+	pole3.rotation.x=Math.PI/2;
+	group.add(pole3);
 }
 
-core.createTurntable=function(item, container){
-	let STEP = game.settings.blockSize;
-	let group = new THREE.Group();
-	group.position.set(item.x * STEP || 0, item.y  * STEP || 0, item.z * STEP || 0);
-	group.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
-	container.add(group);
-	var gz=new THREE.BoxBufferGeometry(STEP, STEP/4, STEP/4);
+core.createTurntable = function(item, container) {
+	var turntable=new core.Obj.Turntable(item);
+	console.log(turntable)
+	container.add(turntable.object);
 }
 
 core.createGroup = function(item, container) {
@@ -115,6 +189,7 @@ core.createGroup = function(item, container) {
 	let stickGeomerty = new THREE.BoxBufferGeometry(STEP / 10, STEP, STEP / 10);
 	triangleGeometry.vertices = [new THREE.Vector3(STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1)];
 	triangleGeometry.mergeVertices();
+	
 	for(let child of item.children) {
 		let material;
 		if(child.materialId) {
@@ -135,13 +210,14 @@ core.createGroup = function(item, container) {
 			core.createStick(child, stickGeomerty, material, group);
 		} else if(child.type == "stair") {
 			core.createStair(child, triangleGeometry, material, group);
+		} else if(child.type == "turntable") {
+			core.createTurntable(child, group);
 		} else if(child.type == "group") {
 			core.createGroup(child, group);
 		} else {
 			core.createCube(child, cubeGeometry, material, group);
 		}
 	}
-	console.log(group)
 };
 core.initMapBlocks = function(gameWorld) {
 	let STEP = game.settings.blockSize;
@@ -171,6 +247,8 @@ core.initMapBlocks = function(gameWorld) {
 			core.createStick(item, stickGeomerty, material, gameWorld.scene);
 		} else if(item.type == "stair") {
 			core.createStair(item, triangleGeometry, material, gameWorld.scene);
+		} else if(item.type == "turntable") {
+			core.createTurntable(item, gameWorld.scene);
 		} else if(item.type == "group") {
 			core.createGroup(item, gameWorld.scene);
 		} else {

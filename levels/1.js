@@ -128,6 +128,11 @@ var map = {
 		y: 20,
 		z: 3,
 		height: 4
+	},{
+		type:"turntable",
+		x: 7,
+		y: 8,
+		z: 0
 	}, {
 		type: "group",
 		x: 3,
