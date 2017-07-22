@@ -86,6 +86,10 @@ core.createStair = function(item, g, m, container) {
 		container.add(c);
 	}
 };
+
+core.createGroup=function(item,container){
+	
+};
 core.initMapBlocks = function(gameWorld) {
 	let STEP = game.settings.blockSize;
 	let cubeGeometry = new THREE.BoxBufferGeometry(STEP, STEP, STEP);
@@ -115,6 +119,8 @@ core.initMapBlocks = function(gameWorld) {
 			core.createStick(item, stickGeomerty, material,gameWorld.scene);
 		} else if(item.type == "stair") {
 			core.createStair(item, triangleGeometry, material,gameWorld.scene);
+		} else if(item.type == "group") {
+			core.createGroup(item, gameWorld.scene);
 		} else {
 			core.createCube(item, cubeGeometry, material,gameWorld.scene);
 		}
