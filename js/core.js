@@ -33,6 +33,18 @@ core.createPlane = function(item, g, m, container) {
 	container.add(cube);
 	return cube;
 };
+
+core.createGround = function(item, g, m, container) {
+	let STEP = game.settings.blockSize;
+	let cube = new THREE.Mesh(g, m);
+	cube.position.set(item.x * STEP || 0, (item.y + 5 / 12) * STEP || 0, item.z * STEP || 0);
+	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
+	cube.scale.x = item.width;
+	cube.scale.y = item.height;
+	container.add(cube);
+	return cube;
+};
+
 core.createTri = function(item, g, m, container) {
 	let STEP = game.settings.blockSize;
 	let cube = new THREE.Mesh(g, m);
@@ -123,8 +135,8 @@ core.Obj.Turntable = function(options) {
 
 	let hoopG = new THREE.CylinderBufferGeometry(STEP / 2.3, STEP / 2.3, STEP, 32);
 	let hoopM;
-	if(options.axisMaterial) {
-		hoopM = options.hoopMaterial;
+	if(options.hoopMaterial) {
+		hoopM = core.map.materials[options.hoopMaterial];
 	} else {
 		for(let i in core.map.materials) {
 			hoopM = core.map.materials[i];
@@ -137,8 +149,8 @@ core.Obj.Turntable = function(options) {
 
 	let rodG = new THREE.CylinderBufferGeometry(STEP / 6, STEP / 6, STEP * 2.5, 32);
 	let rodM;
-	if(options.axisMaterial) {
-		rodM = options.rodMaterial;
+	if(options.rodMaterial) {
+		rodM = core.map.materials[options.rodMaterial];
 	} else {
 		for(let i in core.map.materials) {
 			rodM = core.map.materials[i];
@@ -154,8 +166,8 @@ core.Obj.Turntable = function(options) {
 
 	let poleG = new THREE.CylinderBufferGeometry(STEP / 4, STEP / 4, STEP * 0.5, 32);
 	let poleM;
-	if(options.axisMaterial) {
-		poleM = options.poleMaterial;
+	if(options.poleMaterial) {
+		poleM = core.map.materials[options.poleMaterial];
 	} else {
 		for(let i in core.map.materials) {
 			poleM = core.map.materials[i];
@@ -314,6 +326,8 @@ core.createGroup = function(item, container) {
 			core.createCube(child, cubeGeometry, material, group);
 		} else if(child.type == "plane") {
 			core.createPlane(child, cubeGeometry, material, group);
+		} else if(item.type == "ground") {
+			core.createGround(item, cubeGeometry, material, group);
 		} else if(child.type == "tri") {
 			core.createTri(child, triangleGeometry, material, group);
 		} else if(child.type == "stick") {
@@ -389,6 +403,7 @@ core.initMapBlocks = function(gameWorld) {
 	let cubeGeometry = new THREE.BoxBufferGeometry(STEP, STEP, STEP);
 	let triangleGeometry = new THREE.BoxGeometry(STEP, STEP, STEP);
 	let stickGeomerty = new THREE.BoxBufferGeometry(STEP / 10, STEP, STEP / 10);
+	let groundGeometry = new THREE.PlaneBufferGeometry(STEP,STEP);
 	triangleGeometry.vertices = [new THREE.Vector3(STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1)];
 	triangleGeometry.mergeVertices();
 	for(let item of core.map.blocks) {
@@ -407,6 +422,8 @@ core.initMapBlocks = function(gameWorld) {
 			obj = core.createCube(item, cubeGeometry, material, gameWorld.scene);
 		} else if(item.type == "plane") {
 			obj = core.createPlane(item, cubeGeometry, material, gameWorld.scene);
+		} else if(item.type == "ground") {
+			obj = core.createGround(item, groundGeometry, material, gameWorld.scene);
 		} else if(item.type == "tri") {
 			obj = core.createTri(item, triangleGeometry, material, gameWorld.scene);
 		} else if(item.type == "stick") {
@@ -433,7 +450,7 @@ core.initMapMaterials = function(gameWorld) {
 			if(item.mapId != null) {
 				core.map.materials[i] = new THREE.MeshLambertMaterial({
 					color: item.color,
-					map: $$.Loader.RESOURCE.textures["img/path/texture0.jpg"]
+					map: $$.Loader.RESOURCE.textures[item.mapId]
 				});
 			} else {
 				core.map.materials[i] = new THREE.MeshLambertMaterial({

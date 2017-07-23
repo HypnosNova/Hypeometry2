@@ -1,8 +1,8 @@
 var map = {
 	levelBoard: {
-		life:2500,
-		duration:1500,
-		backgroundColor: "rgba(0,0,0,0.3)",
+		life: 2500,
+		duration: 1000,
+		backgroundColor: "rgba(0,0,0,0.4)",
 		info: [{
 			type: "pic",
 			src: "img/common/border.png",
@@ -14,49 +14,49 @@ var map = {
 			family: "微软雅黑",
 			size: 0.035,
 			y: 0.27,
-			color:"#ffffff",
-			weight:"bold"
+			color: "#ffffff",
+			weight: "bold"
 		}, {
 			type: "text",
 			text: "阶梯",
 			family: "微软雅黑",
 			size: 0.07,
 			y: 0.37,
-			color:"#ffffff",
-			weight:"bold"
+			color: "#ffffff",
+			weight: "bold"
 		}, {
 			type: "text",
 			text: "─────",
 			family: "微软雅黑",
 			size: 0.02,
 			y: 0.45,
-			color:"#ffffff",
-			weight:"normal"
+			color: "#ffffff",
+			weight: "normal"
 		}, {
 			type: "text",
 			text: "在此",
 			family: "微软雅黑",
 			size: 0.03,
 			y: 0.5,
-			color:"#ffffff",
-			weight:"bold"
+			color: "#ffffff",
+			weight: "bold"
 		}, {
 			type: "text",
 			text: "我要向",
 			family: "微软雅黑",
-			size: 0.045,
-			y: 0.62,
-			color:"#ffffff",
-			weight:"normal"
+			size: 0.04,
+			y: 0.625,
+			color: "#ffffff",
+			weight: "normal"
 		}, {
 			type: "text",
 			text: "纪念碑谷致敬",
 			family: "微软雅黑",
-			size: 0.045,
+			size: 0.04,
 			y: 0.7,
-			color:"#ffffff",
-			weight:"normal"
-		},{
+			color: "#ffffff",
+			weight: "normal"
+		}, {
 			type: "pic",
 			src: "img/common/border.png",
 			height: 0.1,
@@ -193,6 +193,20 @@ var map = {
 		z: 3,
 		height: 4
 	}, {
+		type: "plane",
+		x: 6,
+		y: 20,
+		z: 2,
+		height: 4
+	}, {
+		type: "ground",
+		width: 22,
+		height: 22,
+		x: 3,
+		y: -1,
+		rx: -Math.PI / 2,
+		materialId: "m3"
+	}, {
 		type: "turntable",
 		x: 8,
 		y: 8,
@@ -215,7 +229,6 @@ var map = {
 				quaro++;
 				tmp -= Math.PI / 2;
 			}
-
 			quaro = quaro % 4;
 			if(quaro === 0) {
 				tmp = 0;
@@ -233,7 +246,9 @@ var map = {
 				}, time)
 				.easing(TWEEN.Easing.Back.Out)
 				.start();
-		}
+		},
+		hoopMaterial: "m2",
+		poleMaterial: "m2"
 	}, {
 		type: "group",
 		id: "bridge",
@@ -269,15 +284,23 @@ var map = {
 		m0: {
 			type: "L",
 			color: 0x818b89,
-			mapId: 0
+			mapId: "img/path/texture0.jpg"
 		},
 		m1: {
 			type: "L",
-			color: 0x9ba4a3,
-			mapId: 0
+			color: 0x9ba4a3
+		},
+		m2: {
+			type: "L",
+			color: 0x77b0bb
+		},
+		m3: {
+			type: "L",
+			color: 0xffffff,
+			mapId: "img/level1ground.png"
 		}
 	},
-	textures: ["img/path/texture0.jpg","img/common/border.png"],
+	textures: ["img/path/texture0.jpg", "img/common/border.png", "img/level1ground.png"],
 	lights: {
 		areaLight: {
 			color: 0x444444,
