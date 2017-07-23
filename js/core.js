@@ -11,6 +11,8 @@ core.createLevelWorld = function() {
 		core.initMapLights(world);
 		core.initMapCamera(world);
 	});
+	
+	world.actionInjections.push(TWEEN.update);
 	return world;
 };
 core.createCube = function(item, g, m, container) {
@@ -70,7 +72,7 @@ core.createStair = function(item, g, m, container) {
 	if(!item.height) {
 		item.height = 1;
 	}
-	let group=new THREE.Group();
+	let group = new THREE.Group();
 	for(let ii = 0; ii < item.height * 6; ii++) {
 		var c = cube.clone();
 		c.position.y += (ii + 1) * STEP / 6 + STEP / 4;
@@ -97,7 +99,7 @@ core.createStair = function(item, g, m, container) {
 	return group;
 };
 core.Obj = {};
-core.Obj.Turntable = function(options, funcMove) {
+core.Obj.Turntable = function(options) {
 	let that = this;
 	let STEP = game.settings.blockSize;
 	let group = new THREE.Group();
@@ -208,12 +210,47 @@ core.Obj.Turntable = function(options, funcMove) {
 		dragEnd();
 	}
 
-	function dragEnd() {
+	function dragEnd(e) {
 		that.isDown = false;
 		$$.global.canvasDom.removeEventListener("mousemove", dragMove, false);
 		$$.global.canvasDom.removeEventListener("touchmove", dragMove, false);
 		$$.global.canvasDom.removeEventListener("mouseup", dragEnd, false);
 		$$.global.canvasDom.removeEventListener("touchend", dragEnd, false);
+		var tmp = group.rotation.x;
+		while(tmp < 0) {
+			tmp += 2 * Math.PI;
+		}
+		group.rotation.x=tmp;
+		if(group.rotation.x>Math.PI/4*7){
+			group.rotation.x-=2*Math.PI;
+		}
+		console.log(group.rotation.x)
+		tmp-=Math.PI/4;
+		var quaro = 0;
+		while(tmp > 0) {
+			quaro++;
+			tmp -= Math.PI / 2;
+		}
+		
+		quaro = quaro % 4;
+		if(quaro === 0) {
+			tmp = 0;
+		} else if(quaro === 1) {
+			tmp = Math.PI / 2;
+		} else if(quaro === 2) {
+			tmp = Math.PI;
+		} else if(quaro === 3) {
+			tmp = Math.PI * 1.5;
+		}
+		var time = Math.abs(group.rotation.x - tmp)*200;
+		var tween = new TWEEN.Tween(group.rotation)
+			.to({
+				x: tmp
+			}, time)
+			.start();
+		if(options.funcEnd) {
+			options.funcEnd(e,group.rotation.x);
+		}
 	}
 
 	function dragMove(event) {
@@ -329,7 +366,7 @@ core.initMapBlocks = function(gameWorld) {
 			obj = core.createCube(item, cubeGeometry, material, gameWorld.scene);
 		}
 		if(item.id) {
-			core.childrenWithId[item.id]=obj;
+			core.childrenWithId[item.id] = obj;
 		}
 	}
 };

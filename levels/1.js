@@ -128,18 +128,51 @@ var map = {
 		y: 20,
 		z: 3,
 		height: 4
-	},{
-		type:"turntable",
+	}, {
+		type: "turntable",
 		x: 8,
 		y: 8,
 		z: 0,
-		funcMove:function(e,angle){
-//			console.log(core.childrenWithId);
-			core.childrenWithId["bridge"].rotation.x=angle;
+		funcMove: function(e, angle) {
+			core.childrenWithId["bridge"].rotation.x = angle;
+		},
+		funcEnd: function(e, angle) {
+			var tmp = angle;
+			while(tmp < 0) {
+				tmp += 2 * Math.PI;
+			}
+			core.childrenWithId["bridge"].rotation.x = tmp;
+			if(core.childrenWithId["bridge"].rotation.x > Math.PI / 4 * 7) {
+				core.childrenWithId["bridge"].rotation.x -= 2 * Math.PI;
+			}
+			console.log(core.childrenWithId["bridge"].rotation.x)
+			tmp -= Math.PI / 4;
+			var quaro = 0;
+			while(tmp > 0) {
+				quaro++;
+				tmp -= Math.PI / 2;
+			}
+
+			quaro = quaro % 4;
+			if(quaro === 0) {
+				tmp = 0;
+			} else if(quaro === 1) {
+				tmp = Math.PI / 2;
+			} else if(quaro === 2) {
+				tmp = Math.PI;
+			} else if(quaro === 3) {
+				tmp = Math.PI * 1.5;
+			}
+			var time = Math.abs(core.childrenWithId["bridge"].rotation.x - tmp) * 200;
+			var tween = new TWEEN.Tween(core.childrenWithId["bridge"].rotation)
+				.to({
+					x: tmp
+				}, time)
+				.start();
 		}
 	}, {
 		type: "group",
-		id:"bridge",
+		id: "bridge",
 		x: 3,
 		y: 8,
 		z: 0,
@@ -156,15 +189,15 @@ var map = {
 			materialId: "m1"
 		}, {
 			x: 3,
-			z: 1,
+			y: -1,
 			materialId: "m1"
 		}, {
 			x: 3,
-			z: 2,
+			y: -2,
 			materialId: "m1"
 		}, {
 			x: 3,
-			z: 3,
+			y: -3,
 			materialId: "m1"
 		}]
 	}],
