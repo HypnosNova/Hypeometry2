@@ -1,5 +1,6 @@
 var core = {};
 core.map = {};
+core.childrenWithId = {};
 core.createLevelWorld = function() {
 	let world = new $$.SubWorld({}, {
 		type: "OrthographicCamera"
@@ -18,6 +19,7 @@ core.createCube = function(item, g, m, container) {
 	cube.position.set(item.x * STEP || 0, item.y * STEP || 0, item.z * STEP || 0);
 	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	container.add(cube);
+	return cube;
 };
 core.createPlane = function(item, g, m, container) {
 	let STEP = game.settings.blockSize;
@@ -26,6 +28,7 @@ core.createPlane = function(item, g, m, container) {
 	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	cube.scale.y = 1 / 6;
 	container.add(cube);
+	return cube;
 };
 core.createTri = function(item, g, m, container) {
 	let STEP = game.settings.blockSize;
@@ -33,6 +36,7 @@ core.createTri = function(item, g, m, container) {
 	cube.position.set(item.x * STEP || 0, item.y * STEP || 0, item.z * STEP || 0);
 	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	container.add(cube);
+	return cube;
 };
 core.createStick = function(item, g, m, container) {
 	let STEP = game.settings.blockSize;
@@ -56,6 +60,7 @@ core.createStick = function(item, g, m, container) {
 		cube.position.z += STEP * 0.45;
 	}
 	container.add(cube);
+	return cube;
 };
 core.createStair = function(item, g, m, container) {
 	let STEP = game.settings.blockSize;
@@ -65,29 +70,35 @@ core.createStair = function(item, g, m, container) {
 	if(!item.height) {
 		item.height = 1;
 	}
+	let group=new THREE.Group();
 	for(let ii = 0; ii < item.height * 6; ii++) {
 		var c = cube.clone();
-		c.position.y += (ii + 1) * STEP / 6;
+		c.position.y += (ii + 1) * STEP / 6 + STEP / 4;
 		if(item.d === 0) {
-			c.position.z -= (ii) * STEP / 6;
+			c.position.z -= (ii) * STEP / 6 - STEP / 4;
 			c.rotation.y = Math.PI / 2;
 		} else if(item.d === 1) {
-			c.position.x += (ii) * STEP / 6;
+			c.position.x += (ii) * STEP / 6 - STEP / 4;
 		} else if(item.d === 2) {
-			c.position.z += (ii) * STEP / 6;
+			c.position.z += (ii) * STEP / 6 - STEP / 4;
 			c.rotation.y = -Math.PI / 2;
 		} else if(item.d === 3) {
-			c.position.x -= (ii) * STEP / 6;
+			c.position.x -= (ii) * STEP / 6 - STEP / 4;
 			c.rotation.y = Math.PI;
 		} else {
-			c.position.z -= (ii) * STEP / 6;
+			c.position.z -= (ii) * STEP / 6 - STEP / 4;
 			c.rotation.y = Math.PI / 2;
 		}
-		container.add(c);
+		c.scale.x = 0.5;
+		c.scale.y = 0.5;
+		group.add(c);
 	}
+	container.add(group);
+	return group;
 };
 core.Obj = {};
-core.Obj.Turntable = function(options) {
+core.Obj.Turntable = function(options, funcMove) {
+	let that = this;
 	let STEP = game.settings.blockSize;
 	let group = new THREE.Group();
 	group.position.set(options.x * STEP || 0, options.y * STEP || 0, options.z * STEP || 0);
@@ -104,6 +115,7 @@ core.Obj.Turntable = function(options) {
 		}
 	}
 	let axis = new THREE.Mesh(axisG, axisM);
+	axis.position.x = -STEP;
 	group.add(axis);
 
 	let hoopG = new THREE.CylinderBufferGeometry(STEP / 2.3, STEP / 2.3, STEP, 32);
@@ -117,11 +129,10 @@ core.Obj.Turntable = function(options) {
 		}
 	}
 	var hoop = new THREE.Mesh(hoopG, hoopM);
-	hoop.position.x=STEP;
-	hoop.rotation.z=Math.PI/2;
+	hoop.rotation.z = Math.PI / 2;
 	group.add(hoop);
-	
-	let rodG = new THREE.CylinderBufferGeometry(STEP / 6, STEP / 6, STEP*2.5, 32);
+
+	let rodG = new THREE.CylinderBufferGeometry(STEP / 6, STEP / 6, STEP * 2.5, 32);
 	let rodM;
 	if(options.axisMaterial) {
 		rodM = options.rodMaterial;
@@ -132,15 +143,13 @@ core.Obj.Turntable = function(options) {
 		}
 	}
 	var rod1 = new THREE.Mesh(rodG, rodM);
-	rod1.position.x=STEP;
 	group.add(rod1);
-	
+
 	var rod2 = rod1.clone();
-	rod2.position.x=STEP;
-	rod2.rotation.x=Math.PI/2;
+	rod2.rotation.x = Math.PI / 2;
 	group.add(rod2);
-	
-	let poleG = new THREE.CylinderBufferGeometry(STEP / 4, STEP / 4, STEP*0.5, 32);
+
+	let poleG = new THREE.CylinderBufferGeometry(STEP / 4, STEP / 4, STEP * 0.5, 32);
 	let poleM;
 	if(options.axisMaterial) {
 		poleM = options.poleMaterial;
@@ -151,31 +160,94 @@ core.Obj.Turntable = function(options) {
 		}
 	}
 	var pole1 = new THREE.Mesh(poleG, poleM);
-	pole1.position.x=STEP;
-	pole1.position.y=STEP*1.5;
+	pole1.position.y = STEP * 1.5;
 	group.add(pole1);
 	var pole2 = pole1.clone();
-	pole2.position.x=STEP;
-	pole2.position.y=-STEP*1.5;
+	pole2.position.y = -STEP * 1.5;
 	group.add(pole2);
 	var pole3 = pole1.clone();
-	pole3.position.x=STEP;
-	pole3.position.y=0;
-	pole3.position.z=STEP*1.5;
-	pole3.rotation.x=Math.PI/2;
+	pole3.position.y = 0;
+	pole3.position.z = STEP * 1.5;
+	pole3.rotation.x = Math.PI / 2;
 	group.add(pole3);
-	var pole3 = pole1.clone();
-	pole3.position.x=STEP;
-	pole3.position.y=0;
-	pole3.position.z=-STEP*1.5;
-	pole3.rotation.x=Math.PI/2;
-	group.add(pole3);
+	var pole4 = pole1.clone();
+	pole4.position.y = 0;
+	pole4.position.z = -STEP * 1.5;
+	pole4.rotation.x = Math.PI / 2;
+	group.add(pole4);
+
+	hoop.onDown = axis.onDown = rod1.onDown = rod2.onDown = pole1.onDown = pole2.onDown = pole3.onDown = pole4.onDown = function() {
+		that.isDown = true;
+		var canvasXY = $$.sceneCoordinateToCanvasCoordinate(group);
+		if(event.touches) {
+			var e = event.touches[0];
+		} else {
+			var e = event;
+		}
+		var distance = Math.sqrt((e.clientX - canvasXY.x) * (e.clientX - canvasXY.x) + (e.clientY - canvasXY.y) * (e.clientY - canvasXY.y));
+		if(distance > 0) {
+			that.clickAngle = 0;
+			if(e.clientY > canvasXY.y) {
+				that.clickAngle = 2 * Math.PI - Math.acos((e.clientX - canvasXY.x) / distance);
+			} else {
+				that.clickAngle = Math.acos((e.clientX - canvasXY.x) / distance);
+			}
+		} else {
+			that.clickAngle = 0;
+		}
+		that.preAngle = that.clickAngle;
+		$$.global.canvasDom.addEventListener("mouseup", dragEnd, false);
+		$$.global.canvasDom.addEventListener("touchend", dragEnd, false);
+		$$.global.canvasDom.addEventListener("mousemove", dragMove, false);
+		$$.global.canvasDom.addEventListener("touchmove", dragMove, false);
+	}
+	hoop.onUp = axis.onUp = rod1.onUp = rod2.onUp = pole1.onUp = pole2.onUp = pole3.onUp = pole4.onUp = function() {
+		dragEnd();
+	}
+	hoop.onClick = axis.onClick = rod1.onClick = rod2.onClick = pole1.onClick = pole2.onClick = pole3.onClick = pole4.onClick = function() {
+		dragEnd();
+	}
+
+	function dragEnd() {
+		that.isDown = false;
+		$$.global.canvasDom.removeEventListener("mousemove", dragMove, false);
+		$$.global.canvasDom.removeEventListener("touchmove", dragMove, false);
+		$$.global.canvasDom.removeEventListener("mouseup", dragEnd, false);
+		$$.global.canvasDom.removeEventListener("touchend", dragEnd, false);
+	}
+
+	function dragMove(event) {
+		if(that.isDown) {
+			if(event.touches) {
+				var e = event.touches[0];
+			} else {
+				var e = event;
+			}
+			var canvasXY = $$.sceneCoordinateToCanvasCoordinate(group);
+			var distance = Math.sqrt((e.clientX - canvasXY.x) * (e.clientX - canvasXY.x) + (e.clientY - canvasXY.y) * (e.clientY - canvasXY.y));
+			if(distance > 0) {
+				that.clickAngle = 0;
+				if(e.clientY > canvasXY.y) {
+					that.clickAngle = 2 * Math.PI - Math.acos((e.clientX - canvasXY.x) / distance);
+				} else {
+					that.clickAngle = Math.acos((e.clientX - canvasXY.x) / distance);
+				}
+			} else {
+				that.clickAngle = 0;
+			}
+			group.rotation.x += that.clickAngle - that.preAngle;
+			that.preAngle = that.clickAngle;
+			if(options.funcMove) {
+				options.funcMove(e, group.rotation.x);
+			}
+		}
+	}
 }
 
 core.createTurntable = function(item, container) {
-	var turntable=new core.Obj.Turntable(item);
-	console.log(turntable)
+	var turntable = new core.Obj.Turntable(item);
 	container.add(turntable.object);
+	return turntable.object;
 }
 
 core.createGroup = function(item, container) {
@@ -189,7 +261,7 @@ core.createGroup = function(item, container) {
 	let stickGeomerty = new THREE.BoxBufferGeometry(STEP / 10, STEP, STEP / 10);
 	triangleGeometry.vertices = [new THREE.Vector3(STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1)];
 	triangleGeometry.mergeVertices();
-	
+
 	for(let child of item.children) {
 		let material;
 		if(child.materialId) {
@@ -218,6 +290,7 @@ core.createGroup = function(item, container) {
 			core.createCube(child, cubeGeometry, material, group);
 		}
 	}
+	return group;
 };
 core.initMapBlocks = function(gameWorld) {
 	let STEP = game.settings.blockSize;
@@ -237,22 +310,26 @@ core.initMapBlocks = function(gameWorld) {
 				break;
 			}
 		}
+		var obj;
 		if(item.type == "cube") {
-			core.createCube(item, cubeGeometry, material, gameWorld.scene);
+			obj = core.createCube(item, cubeGeometry, material, gameWorld.scene);
 		} else if(item.type == "plane") {
-			core.createPlane(item, cubeGeometry, material, gameWorld.scene);
+			obj = core.createPlane(item, cubeGeometry, material, gameWorld.scene);
 		} else if(item.type == "tri") {
-			core.createTri(item, triangleGeometry, material, gameWorld.scene);
+			obj = core.createTri(item, triangleGeometry, material, gameWorld.scene);
 		} else if(item.type == "stick") {
-			core.createStick(item, stickGeomerty, material, gameWorld.scene);
+			obj = core.createStick(item, stickGeomerty, material, gameWorld.scene);
 		} else if(item.type == "stair") {
-			core.createStair(item, triangleGeometry, material, gameWorld.scene);
+			obj = core.createStair(item, triangleGeometry, material, gameWorld.scene);
 		} else if(item.type == "turntable") {
-			core.createTurntable(item, gameWorld.scene);
+			obj = core.createTurntable(item, gameWorld.scene);
 		} else if(item.type == "group") {
-			core.createGroup(item, gameWorld.scene);
+			obj = core.createGroup(item, gameWorld.scene);
 		} else {
-			core.createCube(item, cubeGeometry, material, gameWorld.scene);
+			obj = core.createCube(item, cubeGeometry, material, gameWorld.scene);
+		}
+		if(item.id) {
+			core.childrenWithId[item.id]=obj;
 		}
 	}
 };

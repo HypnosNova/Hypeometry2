@@ -130,11 +130,16 @@ var map = {
 		height: 4
 	},{
 		type:"turntable",
-		x: 7,
+		x: 8,
 		y: 8,
-		z: 0
+		z: 0,
+		funcMove:function(e,angle){
+//			console.log(core.childrenWithId);
+			core.childrenWithId["bridge"].rotation.x=angle;
+		}
 	}, {
 		type: "group",
+		id:"bridge",
 		x: 3,
 		y: 8,
 		z: 0,
@@ -205,13 +210,13 @@ var map = {
 	camera: {
 		position: {
 			x: 1000,
-			z: 1000,
+			z: 940,
 			y: 1150,
 		},
 		lookAt: {
 			x: 0,
 			y: 150,
-			z: 0
+			z: -60
 		}
 	}
 }
