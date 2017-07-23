@@ -163,11 +163,12 @@ var map = {
 			} else if(quaro === 3) {
 				tmp = Math.PI * 1.5;
 			}
-			var time = Math.abs(core.childrenWithId["bridge"].rotation.x - tmp) * 200;
+			var time = Math.abs(core.childrenWithId["bridge"].rotation.x - tmp) * 400;
 			var tween = new TWEEN.Tween(core.childrenWithId["bridge"].rotation)
 				.to({
 					x: tmp
 				}, time)
+				.easing(TWEEN.Easing.Back.Out)
 				.start();
 		}
 	}, {
