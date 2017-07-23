@@ -1,4 +1,68 @@
 var map = {
+	levelBoard: {
+		life:2500,
+		duration:1500,
+		backgroundColor: "rgba(0,0,0,0.3)",
+		info: [{
+			type: "pic",
+			src: "img/common/border.png",
+			height: 0.1,
+			y: 0.15
+		}, {
+			type: "text",
+			text: "第一章",
+			family: "微软雅黑",
+			size: 0.035,
+			y: 0.27,
+			color:"#ffffff",
+			weight:"bold"
+		}, {
+			type: "text",
+			text: "阶梯",
+			family: "微软雅黑",
+			size: 0.07,
+			y: 0.37,
+			color:"#ffffff",
+			weight:"bold"
+		}, {
+			type: "text",
+			text: "─────",
+			family: "微软雅黑",
+			size: 0.02,
+			y: 0.45,
+			color:"#ffffff",
+			weight:"normal"
+		}, {
+			type: "text",
+			text: "在此",
+			family: "微软雅黑",
+			size: 0.03,
+			y: 0.5,
+			color:"#ffffff",
+			weight:"bold"
+		}, {
+			type: "text",
+			text: "我要向",
+			family: "微软雅黑",
+			size: 0.045,
+			y: 0.62,
+			color:"#ffffff",
+			weight:"normal"
+		}, {
+			type: "text",
+			text: "纪念碑谷致敬",
+			family: "微软雅黑",
+			size: 0.045,
+			y: 0.7,
+			color:"#ffffff",
+			weight:"normal"
+		},{
+			type: "pic",
+			src: "img/common/border.png",
+			height: 0.1,
+			y: 0.85
+		}]
+	},
 	blocks: [{
 		type: "cube",
 		x: 0,
@@ -145,7 +209,6 @@ var map = {
 			if(core.childrenWithId["bridge"].rotation.x > Math.PI / 4 * 7) {
 				core.childrenWithId["bridge"].rotation.x -= 2 * Math.PI;
 			}
-			console.log(core.childrenWithId["bridge"].rotation.x)
 			tmp -= Math.PI / 4;
 			var quaro = 0;
 			while(tmp > 0) {
@@ -214,7 +277,7 @@ var map = {
 			mapId: 0
 		}
 	},
-	textures: ["img/path/texture0.jpg"],
+	textures: ["img/path/texture0.jpg","img/common/border.png"],
 	lights: {
 		areaLight: {
 			color: 0x444444,

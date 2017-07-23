@@ -10,8 +10,9 @@ core.createLevelWorld = function() {
 		core.initMapBlocks(world);
 		core.initMapLights(world);
 		core.initMapCamera(world);
+		core.initLevelBoard(world);
 	});
-	
+
 	world.actionInjections.push(TWEEN.update);
 	return world;
 };
@@ -220,18 +221,17 @@ core.Obj.Turntable = function(options) {
 		while(tmp < 0) {
 			tmp += 2 * Math.PI;
 		}
-		group.rotation.x=tmp;
-		if(group.rotation.x>Math.PI/4*7){
-			group.rotation.x-=2*Math.PI;
+		group.rotation.x = tmp;
+		if(group.rotation.x > Math.PI / 4 * 7) {
+			group.rotation.x -= 2 * Math.PI;
 		}
-		console.log(group.rotation.x)
-		tmp-=Math.PI/4;
+		tmp -= Math.PI / 4;
 		var quaro = 0;
 		while(tmp > 0) {
 			quaro++;
 			tmp -= Math.PI / 2;
 		}
-		
+
 		quaro = quaro % 4;
 		if(quaro === 0) {
 			tmp = 0;
@@ -242,15 +242,15 @@ core.Obj.Turntable = function(options) {
 		} else if(quaro === 3) {
 			tmp = Math.PI * 1.5;
 		}
-		var time = Math.abs(group.rotation.x - tmp)*400;
-		var tween = new TWEEN.Tween(group.rotation)
+		var time = Math.abs(group.rotation.x - tmp) * 400;
+		new TWEEN.Tween(group.rotation)
 			.to({
 				x: tmp
 			}, time)
 			.easing(TWEEN.Easing.Back.Out)
 			.start();
 		if(options.funcEnd) {
-			options.funcEnd(e,group.rotation.x);
+			options.funcEnd(e, group.rotation.x);
 		}
 	}
 
@@ -330,6 +330,60 @@ core.createGroup = function(item, container) {
 	}
 	return group;
 };
+
+core.initLevelBoard = function(gameWorld) {
+	if(!core.map.levelBoard){
+		return;
+	}
+	let w = $$.getWorldWidth();
+	let h = $$.getWorldHeight();
+	let canvas = document.createElement("canvas");
+	canvas.width = w;
+	canvas.height = h;
+	let ctx = canvas.getContext("2d");
+	ctx.fillStyle = core.map.levelBoard.backgroundColor;
+	ctx.fillRect(0, 0, w, h);
+	ctx.textAlign = "center";
+	for(let item of core.map.levelBoard.info) {
+		if(item.type == "text") {
+			ctx.font = item.size * h + "px " + item.family + " " + item.weight;
+			ctx.fillStyle = item.color;
+			let width = ctx.measureText(item.text).width;
+			ctx.fillText(item.text, w / 2, h * item.y);
+		} else if(item.type == "pic") {
+			let imgWidth = $$.Loader.RESOURCE.textures[item.src].image.naturalWidth;
+			let imgHeight = $$.Loader.RESOURCE.textures[item.src].image.naturalHeight;
+			let newHeight = item.height * h;
+			let newWidth = newHeight / imgHeight * imgWidth;
+			ctx.drawImage($$.Loader.RESOURCE.textures[item.src].image, (w - newWidth) / 2, h * item.y - newHeight / 2, newWidth, newHeight);
+
+		}
+	}
+
+	let texture = new THREE.CanvasTexture(canvas);
+	let geometry = new THREE.PlaneBufferGeometry(w, h, 2);
+	let material = new THREE.MeshBasicMaterial({
+		color: 0xffffff,
+		map: texture,
+		transparent: true,
+	});
+	let plane = new THREE.Mesh(geometry, material);
+
+	plane.position.set(gameWorld.camera.position.x - 100, gameWorld.camera.position.y - 100, gameWorld.camera.position.z - 100);
+	plane.lookAt(gameWorld.camera.position);
+	gameWorld.scene.add(plane);
+	new TWEEN.Tween(plane.material)
+		.to({
+			opacity: 0
+		}, core.map.levelBoard.duration)
+		.delay(core.map.levelBoard.life)
+		.onComplete(function(){
+			gameWorld.scene.remove(plane);
+		})
+		.start();
+	
+};
+
 core.initMapBlocks = function(gameWorld) {
 	let STEP = game.settings.blockSize;
 	let cubeGeometry = new THREE.BoxBufferGeometry(STEP, STEP, STEP);
