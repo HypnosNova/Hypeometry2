@@ -338,5 +338,80 @@ var map = {
 			y: 150,
 			z: -60
 		}
-	}
+	},
+	path: {
+		"p1": {
+			id: "p1",
+			x: 2,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p2","p5"],
+			special: {}
+		},
+		"p2": {
+			id: "p2",
+			x: 3,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p1", "p3"],
+			special: {}
+		},
+		"p3": {
+			id: "p3",
+			x: 4,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p2","p4"],
+			special: {}
+		},
+		"p4": {
+			id: "p4",
+			x: 5,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p3"],
+			special: {}
+		},
+		"p5": {
+			id: "p5",
+			x: 1,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p1","p6"],
+			special: {}
+		},
+		"p6": {
+			id: "p6",
+			x: 8,
+			y: 9,
+			z: 8,
+			face: 0,
+			neighbors: ["p5","p7"],
+			special: {}
+		},
+		"p7": {
+			id: "p7",
+			x: 7,
+			y: 9,
+			z: 8,
+			face: 0,
+			neighbors: ["p6","p8"],
+			special: {}
+		},
+		"p8": {
+			id: "p8",
+			x: 6,
+			y: 9,
+			z: 8,
+			face: 0,
+			neighbors: ["p7"],
+			special: {}
+		}
+	},
+	startPoint: "p3"
 }

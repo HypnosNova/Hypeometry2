@@ -1,6 +1,7 @@
 var core = {};
 core.map = {};
 core.childrenWithId = {};
+core.charactor = {};
 core.createLevelWorld = function() {
 	let world = new $$.SubWorld({}, {
 		type: "OrthographicCamera"
@@ -11,6 +12,8 @@ core.createLevelWorld = function() {
 		core.initMapLights(world);
 		core.initMapCamera(world);
 		core.initLevelBoard(world);
+		core.initPathGraph(world);
+		core.createCharacter(world);
 	});
 
 	world.actionInjections.push(TWEEN.update);
@@ -111,6 +114,24 @@ core.createStair = function(item, g, m, container) {
 	container.add(group);
 	return group;
 };
+
+core.createCharacter = function(gameWorld) {
+	let STEP = game.settings.blockSize;
+	var geometry = new THREE.CylinderBufferGeometry(STEP / 3, 1, STEP, 16);
+	var material = new THREE.MeshLambertMaterial({
+		color: 0xffff00
+	});
+	var cylinder = new THREE.Mesh(geometry, material);
+	gameWorld.scene.add(cylinder);
+	var sp = core.map.path[core.map.startPoint];
+	//	cylinder.isPenetrated=true;
+	cylinder.position.set(sp.x * STEP, sp.y * STEP, sp.z * STEP);
+	cylinder.isWalking = false;
+	cylinder.walkingPath = [];
+	cylinder.currentPath = core.map.startPoint;
+	core.charactor = cylinder;
+};
+
 core.Obj = {};
 core.Obj.Turntable = function(options) {
 	let that = this;
@@ -346,7 +367,7 @@ core.createGroup = function(item, container) {
 };
 
 core.initLevelBoard = function(gameWorld) {
-	if(!core.map.levelBoard){
+	if(!core.map.levelBoard) {
 		return;
 	}
 	let w = $$.getWorldWidth();
@@ -391,11 +412,11 @@ core.initLevelBoard = function(gameWorld) {
 			opacity: 0
 		}, core.map.levelBoard.duration)
 		.delay(core.map.levelBoard.life)
-		.onComplete(function(){
+		.onComplete(function() {
 			gameWorld.scene.remove(plane);
 		})
 		.start();
-	
+
 };
 
 core.initMapBlocks = function(gameWorld) {
@@ -403,7 +424,7 @@ core.initMapBlocks = function(gameWorld) {
 	let cubeGeometry = new THREE.BoxBufferGeometry(STEP, STEP, STEP);
 	let triangleGeometry = new THREE.BoxGeometry(STEP, STEP, STEP);
 	let stickGeomerty = new THREE.BoxBufferGeometry(STEP / 10, STEP, STEP / 10);
-	let groundGeometry = new THREE.PlaneBufferGeometry(STEP,STEP);
+	let groundGeometry = new THREE.PlaneBufferGeometry(STEP, STEP);
 	triangleGeometry.vertices = [new THREE.Vector3(STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, STEP >> 1, STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, -STEP >> 1), new THREE.Vector3(-STEP >> 1, -STEP >> 1, STEP >> 1)];
 	triangleGeometry.mergeVertices();
 	for(let item of core.map.blocks) {
@@ -492,7 +513,121 @@ core.initMapLights = function(gameWorld) {
 	}
 };
 
+core.initPathGraph = function(gameWorld) {
+	let STEP = game.settings.blockSize;
+	var pathInfo = core.map.path;
+	var graph = new core.PathGraph();
+	for(var i in pathInfo) {
+		for(var j of pathInfo[i].neighbors) {
+			graph.addEdge(pathInfo[i].id, j);
+		}
+		let cubeGeometry = new THREE.PlaneBufferGeometry(STEP, STEP);
+		var obj = core.createCube(pathInfo[i], cubeGeometry, core.map.materials[0], gameWorld.scene);
+		obj.pathId = pathInfo[i].id;
+		pathInfo[i].obj = obj;
+		obj.rotation.x = -Math.PI / 2;
+		obj.position.y -= STEP * 0.49;
+		obj.onClick = function(obj) {
+			var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
+			path = path.splice(1)
+			core.moveCharacter(path);
+		}
+	}
+};
+
+core.moveCharacter = function(arr) {
+	let STEP = game.settings.blockSize;
+	if(!arr || arr.length == 0) {
+		core.charactor.isWalking = false;
+		return;
+	}
+//	console.log(arr)
+//	if(core.charactor.walkingPath.length > 1) {
+//		core.charactor.walkingPath = core.charactor.walkingPath.splice(0, 1);
+//	} else if(core.charactor.walkingPath.length == 1) {
+//		core.charactor.walkingPath.concat(arr);
+//	} else {
+//		core.charactor.walkingPath = arr;
+//	}
+	core.charactor.walkingPath = arr;
+	core.charactor.isWalking = true;
+	nextP = core.map.path[arr[0]];
+	new TWEEN.Tween(core.charactor.position)
+		.to({
+			x: nextP.x * STEP,
+			y: nextP.y * STEP,
+			z: nextP.z * STEP
+		}, game.settings.moveSpeed)
+		.onComplete(function() {
+			gameWorld.scene.remove(plane);
+		}).start()
+		.onComplete(function() {
+			core.charactor.currentPath = core.charactor.walkingPath[0];
+			arr=core.charactor.walkingPath.splice(1);
+			core.charactor.walkingPath=[];
+			core.moveCharacter(arr);
+		});
+
+}
+
 core.loadMapResource = function(callback) {
 	$$.Loader.loadTexture(core.map.textures);
 	$$.Loader.onLoadComplete = callback;
 };
+
+core.PathGraph = function() {
+	var neighbors = this.neighbors = {}; // Key = vertex, value = array of neighbors.
+	this.addEdge = function(u, v) {
+		if(neighbors[u] === undefined) { // Add the edge u -> v.
+			neighbors[u] = [];
+		}
+		neighbors[u].push(v);
+		if(neighbors[v] === undefined) { // Also add the edge v -> u in order
+			neighbors[v] = []; // to implement an undirected graph.
+		} // For a directed graph, delete
+		neighbors[v].push(u); // these four lines.
+	};
+
+	function shortestPath(graph, source, target) {
+		if(source == target) { // Delete these four lines if
+			return [source]; // when the source is equal to
+		}
+		// the target.
+		var queue = [source],
+			visited = {
+				source: true
+			},
+			predecessor = {},
+			tail = 0;
+		while(tail < queue.length) {
+			var u = queue[tail++], // Pop a vertex off the queue.
+				neighbors = graph.neighbors[u];
+			for(var i = 0; i < neighbors.length; ++i) {
+				var v = neighbors[i];
+				if(visited[v]) {
+					continue;
+				}
+				visited[v] = true;
+				if(v === target) { // Check if the path is complete.
+					var path = [v]; // If so, backtrack through the path.
+					while(u !== source) {
+						path.push(u);
+						u = predecessor[u];
+					}
+					path.push(u);
+					path.reverse();
+					return path;
+				}
+				predecessor[v] = u;
+				queue.push(v);
+			}
+		}
+		return false;
+	}
+
+	this.findPath = function(start, end) {
+		return shortestPath(this, start, end);
+	}
+
+	return this;
+}

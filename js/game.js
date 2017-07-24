@@ -1,6 +1,7 @@
 var game={};
 game.settings={
-	blockSize:30
+	blockSize:30,
+	moveSpeed:500
 }
 
 function startLevel(){

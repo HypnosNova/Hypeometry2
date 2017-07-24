@@ -80,13 +80,14 @@
 							path.push(u);
 							path.reverse();
 							print(path.join(' &rarr; '));
-							return;
+							return path;
 						}
 						predecessor[v] = u;
 						queue.push(v);
 					}
 				}
 				print('there is no path from ' + source + ' to ' + target);
+				return false;
 			}
 
 			function print(s) { // A quick and dirty way to display output.
@@ -96,7 +97,7 @@
 
 			window.onload = function() {
 				var graph = new Graph();
-				graph.addEdge('A', 'B');
+				graph.addEdge('A', 'x');
 				graph.addEdge('B', 'C');
 				graph.addEdge('B', 'E');
 				graph.addEdge('C', 'D');
@@ -107,9 +108,11 @@
 
 				bfs(graph, 'A');
 				print();
-				shortestPath(graph, 'B', 'G');
+				var path=shortestPath(graph, 'B', 'G');
+				console.log(path)
 				print();
-				shortestPath(graph, 'G', 'A');
+				var path=shortestPath(graph, 'G', 'A');
+				console.log(path)
 			};
 		</script>
 	</body>
