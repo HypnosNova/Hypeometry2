@@ -409,7 +409,43 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p7"],
+			neighbors: ["p7","p9"],
+			special: {}
+		},
+		"p9": {
+			id: "p9",
+			x: 6,
+			y: 9,
+			z: 7,
+			face: 0,
+			neighbors: ["p8","p10"],
+			special: {}
+		},
+		"p10": {
+			id: "p10",
+			x: 6,
+			y: 9,
+			z: 6,
+			face: 0,
+			neighbors: ["p9","p11"],
+			special: {}
+		},
+		"p11": {
+			id: "p11",
+			x: 6,
+			y: 9,
+			z: 5,
+			face: 0,
+			neighbors: ["p10","p12"],
+			special: {}
+		},
+		"p12": {
+			id: "p12",
+			x: 6,
+			y: 9,
+			z: 4,
+			face: 0,
+			neighbors: ["p11"],
 			special: {}
 		}
 	},
