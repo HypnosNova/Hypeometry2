@@ -247,7 +247,6 @@ var map = {
 				.easing(TWEEN.Easing.Back.Out)
 				.start().onComplete(function(){
 					if(core.childrenWithId["bridge"].rotation.x==Math.PI* 1.5){
-						console.log("???")
 						var nb=core.map.path0.p12.neighbors;
 						for(var i in nb){
 							if(nb[i]=="p13"){
@@ -256,12 +255,24 @@ var map = {
 						}
 						core.map.path0.p12.neighbors.push("p13");
 						core.map.path0.p13.neighbors.push("p12");
+						
+						var nb=core.map.path0.p19.neighbors;
+						for(var i in nb){
+							if(nb[i]=="p20"){
+								return;
+							}
+						}
+						core.map.path0.p19.neighbors.push("p20");
+						core.map.path0.p20.neighbors.push("p19");
 					}else{
 						var nb=core.map.path0.p12.neighbors;
 						removeByValue(nb,"p13");
 						var nb=core.map.path0.p13.neighbors;
 						removeByValue(nb,"p12");
-						console.log()
+						var nb=core.map.path0.p19.neighbors;
+						removeByValue(nb,"p20");
+						var nb=core.map.path0.p20.neighbors;
+						removeByValue(nb,"p19");
 					}
 				});
 		},
@@ -361,8 +372,7 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p2","p5"],
-			special: {}
+			neighbors: ["p2","p5"]
 		},
 		"p2": {
 			id: "p2",
@@ -370,8 +380,7 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p1", "p3"],
-			special: {}
+			neighbors: ["p1", "p3"]
 		},
 		"p3": {
 			id: "p3",
@@ -379,8 +388,7 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p2","p4"],
-			special: {}
+			neighbors: ["p2","p4"]
 		},
 		"p4": {
 			id: "p4",
@@ -388,8 +396,7 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p3"],
-			special: {}
+			neighbors: ["p3"]
 		},
 		"p5": {
 			id: "p5",
@@ -397,8 +404,7 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p1","p6"],
-			special: {}
+			neighbors: ["p1","p6"]
 		},
 		"p6": {
 			id: "p6",
@@ -406,8 +412,7 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p5","p7"],
-			special: {}
+			neighbors: ["p5","p7"]
 		},
 		"p7": {
 			id: "p7",
@@ -415,8 +420,7 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p6","p8"],
-			special: {}
+			neighbors: ["p6","p8"]
 		},
 		"p8": {
 			id: "p8",
@@ -424,8 +428,7 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p7","p9"],
-			special: {}
+			neighbors: ["p7","p9"]
 		},
 		"p9": {
 			id: "p9",
@@ -433,8 +436,7 @@ var map = {
 			y: 9,
 			z: 7,
 			face: 0,
-			neighbors: ["p8","p10"],
-			special: {}
+			neighbors: ["p8","p10"]
 		},
 		"p10": {
 			id: "p10",
@@ -442,8 +444,7 @@ var map = {
 			y: 9,
 			z: 6,
 			face: 0,
-			neighbors: ["p9","p11"],
-			special: {}
+			neighbors: ["p9","p11"]
 		},
 		"p11": {
 			id: "p11",
@@ -451,8 +452,7 @@ var map = {
 			y: 9,
 			z: 5,
 			face: 0,
-			neighbors: ["p10","p12"],
-			special: {}
+			neighbors: ["p10","p12"]
 		},
 		"p12": {
 			id: "p12",
@@ -460,8 +460,7 @@ var map = {
 			y: 9,
 			z: 4,
 			face: 0,
-			neighbors: ["p11"],
-			special: {}
+			neighbors: ["p11"]
 		},
 		"p13": {
 			id: "p13",
@@ -470,9 +469,7 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p14"],
-			special: {
-				parentId:"bridge"
-			}
+			parentId:"bridge"
 		},
 		"p14": {
 			id: "p14",
@@ -480,10 +477,199 @@ var map = {
 			y: -2,
 			z: 1,
 			face: 2,
-			neighbors: ["p13"],
-			special: {
-				parentId:"bridge"
+			neighbors: ["p13","p15"],
+			parentId:"bridge"
+		},
+		"p15": {
+			id: "p15",
+			x: 3,
+			y: -1,
+			z: 1,
+			face: 2,
+			neighbors: ["p14","p16"],
+			parentId:"bridge"
+		},
+		"p16": {
+			id: "p16",
+			x: 3,
+			y: 0,
+			z: 1,
+			face: 2,
+			neighbors: ["p15","p17"],
+			parentId:"bridge"
+		},
+		"p17": {
+			id: "p17",
+			x: 2,
+			y: 0,
+			z: 1,
+			face: 2,
+			neighbors: ["p16","p18"],
+			parentId:"bridge"
+		},
+		"p18": {
+			id: "p18",
+			x: 1,
+			y: 0,
+			z: 1,
+			face: 2,
+			neighbors: ["p17","p19"],
+			parentId:"bridge"
+		},
+		"p19": {
+			id: "p19",
+			x: 0,
+			y: 0,
+			z: 1,
+			face: 2,
+			neighbors: ["p18"],
+			parentId:"bridge"
+		},
+		"p20": {
+			id: "p20",
+			x: 2,
+			y: 9,
+			z: 0,
+			face: 0,
+			neighbors: ["p21"]
+		},
+		"p21": {
+			id: "p21",
+			x: 9,
+			y: 17,
+			z: 8,
+			face: 0,
+			neighbors: ["p20","p22"]
+		},
+		"p22": {
+			id: "p22",
+			x: 8,
+			y: 17,
+			z: 8,
+			face: 0,
+			neighbors: ["p21","p23"]
+		},
+		"p23": {
+			id: "p23",
+			x: 7,
+			y: 17,
+			z: 8,
+			face: 0,
+			neighbors: ["p22","p24"]
+		},
+		"p24": {
+			id: "p24",
+			x: 6,
+			y: 17,
+			z: 8,
+			face: 0,
+			neighbors: ["p23","tm1"],
+			changeSpeed:{
+				"tm1":"auto"
 			}
+		},
+		"tm1":{
+			id: "tm1",
+			x: 6,
+			y: 17,
+			z: 7.5,
+			face: 0,
+			sx:0.1,
+			sy:0.1,
+			neighbors: ["p24","p25"],
+			cannotClick:true,
+			changeSpeed:{
+				"p24":"auto",
+				"p25":"auto"
+			}
+		},
+		"p25": {
+			id: "p25",
+			x: 6,
+			y: 17.58,
+			z: 7.12,
+			rx:Math.PI/4,
+			sy:1.414,
+			face: 0,
+			neighbors: ["tm1",'p26'],
+			changeSpeed:{
+				"tm1":"auto",
+				"p26":"auto"
+			}
+		},
+		"p26": {
+			id: "p26",
+			x: 6,
+			y: 18.58,
+			z: 6.12,
+			rx:Math.PI/4,
+			sy:1.414,
+			face: 0,
+			neighbors: ["p25","p27"],
+			changeSpeed:{
+				"p25":"auto",
+				"p27":"auto",
+			}
+		},
+		"p27": {
+			id: "p27",
+			x: 6,
+			y: 19.58,
+			z: 5.12,
+			rx:Math.PI/4,
+			sy:1.414,
+			face: 0,
+			neighbors: ["p26","p28"],
+			changeSpeed:{
+				"p26":"auto",
+				"p28":"auto",
+			}
+		},"p28": {
+			id: "p28",
+			x: 6,
+			y: 20.58,
+			z: 4.12,
+			rx:Math.PI/4,
+			sy:1.414,
+			face: 0,
+			neighbors: ["p27","tm2"],
+			changeSpeed:{
+				"tm2":"auto"
+			}
+		},
+		"tm2":{
+			id: "tm2",
+			x: 6,
+			y: 21,
+			z: 3.5,
+			face: 0,
+			sx:0.1,
+			sy:0.1,
+			neighbors: ["p28","p29"],
+			cannotClick:true,
+			changeSpeed:{
+				"p28":"auto",
+				"p29":"auto"
+			}
+		},
+		"p29": {
+			id: "p29",
+			x: 6,
+			y: 21,
+			z: 3,
+			face: 0,
+			neighbors: ["tm2","p30"],
+			changeSpeed:{
+				"tm2":"auto"
+			}
+		},
+		"p30": {
+			id: "p30",
+			x: 6,
+			y: 21,
+			z: 2,
+			face: 0,
+			neighbors: ["p29"]
 		}
 	},
 	startPoint: "p3"

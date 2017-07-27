@@ -522,8 +522,8 @@ core.initPathGraph = function(gameWorld) {
 	var graph = new core.PathGraph(pathInfo);
 	for(var i in pathInfo) {
 		let cubeGeometry = new THREE.PlaneBufferGeometry(STEP, STEP);
-		if(pathInfo[i].special && pathInfo[i].special.parentId) {
-			var contain = core.childrenWithId[pathInfo[i].special.parentId];
+		if(pathInfo[i].parentId) {
+			var contain = core.childrenWithId[pathInfo[i].parentId];
 		} else {
 			var contain = gameWorld.scene;
 		}
@@ -534,20 +534,39 @@ core.initPathGraph = function(gameWorld) {
 			obj.rotation.x = -Math.PI / 2;
 			obj.position.y -= STEP * 0.49;
 		}else if(pathInfo[i].face==2){
-//			obj.rotation.x = -Math.PI / 2;
 			obj.position.z -= STEP * 0.49;
-			console.log(obj.parent==gameWorld.scene)
+//			console.log(obj.parent==gameWorld.scene)
+		}
+		if(pathInfo[i].rx){
+			obj.rotation.x +=pathInfo[i].rx;
+		}
+		if(pathInfo[i].ry){
+			obj.rotation.y +=pathInfo[i].ry;
+		}
+		if(pathInfo[i].rz){
+			obj.rotation.z +=pathInfo[i].rz;
+		}
+		if(pathInfo[i].sx){
+			obj.scale.x=pathInfo[i].rx;
+		}
+		if(pathInfo[i].sy){
+			console.log(pathInfo[i].sy)
+			obj.scale.y=pathInfo[i].sy;
+		}
+		if(pathInfo[i].cannotClick){
+			obj.isPenetrated=true;
+		}else{
+			obj.onClick = function(obj) {
+				var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
+				//console.log(path)
+				if(path===false){
+					return;
+				}
+				path = path.splice(1);
+				core.moveCharacter(path);
+			}
 		}
 		
-		obj.onClick = function(obj) {
-			var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
-			console.log(path)
-			if(path===false){
-				return;
-			}
-			path = path.splice(1);
-			core.moveCharacter(path);
-		}
 	}
 };
 
@@ -569,11 +588,24 @@ core.moveCharacter = function(arr) {
 	core.charactor.isWalking = true;
 	nextP = core.map["path" + core.map.currentPath][arr[0]];
 	var vec=new THREE.Vector3(nextP.x * STEP,nextP.y * STEP,nextP.z * STEP);
-	if(nextP.special&&nextP.special.parentId){
-		vec = core.childrenWithId[nextP.special.parentId].localToWorld(vec);
+	if(nextP.parentId){
+		vec = core.childrenWithId[nextP.parentId].localToWorld(vec);
 	}
+	var time=game.settings.moveSpeed;
+	
+	var prevP=core.map["path" + core.map.currentPath][core.charactor.currentPath];
+
+	if(prevP.changeSpeed&&prevP.changeSpeed[nextP.id]){
+		var str=prevP.changeSpeed[nextP.id];
+		if(typeof str =="number"){
+			time=str;
+		}else if(str =="auto"){
+			time=time/STEP*core.charactor.position.distanceTo(vec);
+		}
+	}
+	
 	new TWEEN.Tween(core.charactor.position)
-		.to(vec, game.settings.moveSpeed)
+		.to(vec, time)
 		.onComplete(function() {
 			gameWorld.scene.remove(plane);
 		}).start()
