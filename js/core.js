@@ -123,7 +123,7 @@ core.createCharacter = function(gameWorld) {
 	});
 	var cylinder = new THREE.Mesh(geometry, material);
 	gameWorld.scene.add(cylinder);
-	var sp = core.map.path[core.map.startPoint];
+	var sp = core.map["path" + core.map.currentPath][core.map.startPoint];
 	//	cylinder.isPenetrated=true;
 	cylinder.position.set(sp.x * STEP, sp.y * STEP, sp.z * STEP);
 	cylinder.isWalking = false;
@@ -494,9 +494,12 @@ core.initMapMaterials = function(gameWorld) {
 };
 
 core.initMapCamera = function(gameWorld) {
+	let STEP = game.settings.blockSize;
 	let c = core.map.camera;
-	gameWorld.camera.position.set(c.position.x, c.position.y, c.position.z);
-	gameWorld.camera.lookAt(new THREE.Vector3(c.lookAt.x, c.lookAt.y, c.lookAt.z));
+	if(core.map.currentPath === 0) {
+		gameWorld.camera.position.set((c.lookAt.x + c.distance) * STEP, (c.lookAt.y + c.distance) * STEP, (c.lookAt.z + c.distance) * STEP);
+	}
+	gameWorld.camera.lookAt(new THREE.Vector3(c.lookAt.x * STEP, c.lookAt.y * STEP, c.lookAt.z * STEP));
 };
 
 core.initMapLights = function(gameWorld) {
@@ -515,21 +518,34 @@ core.initMapLights = function(gameWorld) {
 
 core.initPathGraph = function(gameWorld) {
 	let STEP = game.settings.blockSize;
-	var pathInfo = core.map.path;
-	var graph = new core.PathGraph();
+	var pathInfo = core.map["path"+core.map.currentPath];
+	var graph = new core.PathGraph(pathInfo);
 	for(var i in pathInfo) {
-		for(var j of pathInfo[i].neighbors) {
-			graph.addEdge(pathInfo[i].id, j);
-		}
 		let cubeGeometry = new THREE.PlaneBufferGeometry(STEP, STEP);
-		var obj = core.createCube(pathInfo[i], cubeGeometry, core.map.materials[0], gameWorld.scene);
+		if(pathInfo[i].special && pathInfo[i].special.parentId) {
+			var contain = core.childrenWithId[pathInfo[i].special.parentId];
+		} else {
+			var contain = gameWorld.scene;
+		}
+		var obj = core.createCube(pathInfo[i], cubeGeometry, core.map.materials[0], contain);
 		obj.pathId = pathInfo[i].id;
 		pathInfo[i].obj = obj;
-		obj.rotation.x = -Math.PI / 2;
-		obj.position.y -= STEP * 0.49;
+		if(pathInfo[i].face===0){
+			obj.rotation.x = -Math.PI / 2;
+			obj.position.y -= STEP * 0.49;
+		}else if(pathInfo[i].face==2){
+//			obj.rotation.x = -Math.PI / 2;
+			obj.position.z -= STEP * 0.49;
+			console.log(obj.parent==gameWorld.scene)
+		}
+		
 		obj.onClick = function(obj) {
 			var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
-			path = path.splice(1)
+			console.log(path)
+			if(path===false){
+				return;
+			}
+			path = path.splice(1);
 			core.moveCharacter(path);
 		}
 	}
@@ -541,30 +557,30 @@ core.moveCharacter = function(arr) {
 		core.charactor.isWalking = false;
 		return;
 	}
-//	console.log(arr)
-//	if(core.charactor.walkingPath.length > 1) {
-//		core.charactor.walkingPath = core.charactor.walkingPath.splice(0, 1);
-//	} else if(core.charactor.walkingPath.length == 1) {
-//		core.charactor.walkingPath.concat(arr);
-//	} else {
-//		core.charactor.walkingPath = arr;
-//	}
+	//	console.log(arr)
+	//	if(core.charactor.walkingPath.length > 1) {
+	//		core.charactor.walkingPath = core.charactor.walkingPath.splice(0, 1);
+	//	} else if(core.charactor.walkingPath.length == 1) {
+	//		core.charactor.walkingPath.concat(arr);
+	//	} else {
+	//		core.charactor.walkingPath = arr;
+	//	}
 	core.charactor.walkingPath = arr;
 	core.charactor.isWalking = true;
-	nextP = core.map.path[arr[0]];
+	nextP = core.map["path" + core.map.currentPath][arr[0]];
+	var vec=new THREE.Vector3(nextP.x * STEP,nextP.y * STEP,nextP.z * STEP);
+	if(nextP.special&&nextP.special.parentId){
+		vec = core.childrenWithId[nextP.special.parentId].localToWorld(vec);
+	}
 	new TWEEN.Tween(core.charactor.position)
-		.to({
-			x: nextP.x * STEP,
-			y: nextP.y * STEP,
-			z: nextP.z * STEP
-		}, game.settings.moveSpeed)
+		.to(vec, game.settings.moveSpeed)
 		.onComplete(function() {
 			gameWorld.scene.remove(plane);
 		}).start()
 		.onComplete(function() {
 			core.charactor.currentPath = core.charactor.walkingPath[0];
-			arr=core.charactor.walkingPath.splice(1);
-			core.charactor.walkingPath=[];
+			arr = core.charactor.walkingPath.splice(1);
+			core.charactor.walkingPath = [];
 			core.moveCharacter(arr);
 		});
 
@@ -575,8 +591,9 @@ core.loadMapResource = function(callback) {
 	$$.Loader.onLoadComplete = callback;
 };
 
-core.PathGraph = function() {
-	var neighbors = this.neighbors = {}; // Key = vertex, value = array of neighbors.
+core.PathGraph = function(path) {
+	var that=this;
+	this.neighbors = path;//this.neighbors = {}; // Key = vertex, value = array of neighbors.
 	this.addEdge = function(u, v) {
 		if(neighbors[u] === undefined) { // Add the edge u -> v.
 			neighbors[u] = [];
@@ -600,8 +617,8 @@ core.PathGraph = function() {
 			predecessor = {},
 			tail = 0;
 		while(tail < queue.length) {
-			var u = queue[tail++], // Pop a vertex off the queue.
-				neighbors = graph.neighbors[u];
+			var u = queue[tail++]; // Pop a vertex off the queue.
+			var neighbors = graph[u].neighbors;
 			for(var i = 0; i < neighbors.length; ++i) {
 				var v = neighbors[i];
 				if(visited[v]) {
@@ -626,7 +643,7 @@ core.PathGraph = function() {
 	}
 
 	this.findPath = function(start, end) {
-		return shortestPath(this, start, end);
+		return shortestPath(that.neighbors, start, end);
 	}
 
 	return this;

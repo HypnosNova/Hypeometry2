@@ -245,7 +245,25 @@ var map = {
 					x: tmp
 				}, time)
 				.easing(TWEEN.Easing.Back.Out)
-				.start();
+				.start().onComplete(function(){
+					if(core.childrenWithId["bridge"].rotation.x==Math.PI* 1.5){
+						console.log("???")
+						var nb=core.map.path0.p12.neighbors;
+						for(var i in nb){
+							if(nb[i]=="p13"){
+								return;
+							}
+						}
+						core.map.path0.p12.neighbors.push("p13");
+						core.map.path0.p13.neighbors.push("p12");
+					}else{
+						var nb=core.map.path0.p12.neighbors;
+						removeByValue(nb,"p13");
+						var nb=core.map.path0.p13.neighbors;
+						removeByValue(nb,"p12");
+						console.log()
+					}
+				});
 		},
 		hoopMaterial: "m2",
 		poleMaterial: "m2"
@@ -328,18 +346,15 @@ var map = {
 		}
 	},
 	camera: {
-		position: {
-			x: 1000,
-			z: 940,
-			y: 1150,
-		},
+		distance:50,
 		lookAt: {
 			x: 0,
-			y: 150,
-			z: -60
+			y: 5,
+			z: -2
 		}
 	},
-	path: {
+	currentPath:0,
+	path0: {
 		"p1": {
 			id: "p1",
 			x: 2,
@@ -378,9 +393,9 @@ var map = {
 		},
 		"p5": {
 			id: "p5",
-			x: 1,
-			y: 1,
-			z: 0,
+			x: 9,
+			y: 9,
+			z: 8,
 			face: 0,
 			neighbors: ["p1","p6"],
 			special: {}
@@ -447,7 +462,38 @@ var map = {
 			face: 0,
 			neighbors: ["p11"],
 			special: {}
+		},
+		"p13": {
+			id: "p13",
+			x: 3,
+			y: -3,
+			z: 1,
+			face: 2,
+			neighbors: ["p14"],
+			special: {
+				parentId:"bridge"
+			}
+		},
+		"p14": {
+			id: "p14",
+			x: 3,
+			y: -2,
+			z: 1,
+			face: 2,
+			neighbors: ["p13"],
+			special: {
+				parentId:"bridge"
+			}
 		}
 	},
 	startPoint: "p3"
+}
+
+function removeByValue(arr, val) {
+  for(var i=0; i<arr.length; i++) {
+    if(arr[i] == val) {
+      arr.splice(i, 1);
+      break;
+    }
+  }
 }

@@ -22,6 +22,12 @@
 		<script src="js/game.js"></script>
 		<!--<script src="js/load.js"></script>-->
 		<script src="js/main.js"></script>
+		<script>
+			document.body.style.height = $$.getWorldHeight() + "px";
+			document.body.addEventListener('touchmove', function(event) {
+				event.preventDefault();
+			}, false);
+		</script>
 	</body>
 
 </html>
