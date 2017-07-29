@@ -255,7 +255,6 @@ var map = {
 						}
 						core.map.path0.p12.neighbors.push("p13");
 						core.map.path0.p13.neighbors.push("p12");
-						
 						var nb=core.map.path0.p19.neighbors;
 						for(var i in nb){
 							if(nb[i]=="p20"){
@@ -273,6 +272,54 @@ var map = {
 						removeByValue(nb,"p20");
 						var nb=core.map.path0.p20.neighbors;
 						removeByValue(nb,"p19");
+					}
+					if(core.childrenWithId["bridge"].rotation.x==0){
+						var nb=core.map.path0.p20.neighbors;
+						for(var i in nb){
+							if(nb[i]=="p34"){
+								return;
+							}
+						}
+						core.map.path0.p20.neighbors.push("p34");
+						core.map.path0.p34.neighbors.push("p20");
+						
+					}else{
+						var nb=core.map.path0.p20.neighbors;
+						removeByValue(nb,"p34");
+						var nb=core.map.path0.p34.neighbors;
+						removeByValue(nb,"p20");
+					}
+					if(core.childrenWithId["bridge"].rotation.x==Math.PI){
+						var nb=core.map.path0.p20.neighbors;
+						for(var i in nb){
+							if(nb[i]=="p37"){
+								return;
+							}
+						}
+						core.map.path0.p20.neighbors.push("p37");
+						core.map.path0.p37.neighbors.push("p20");
+						
+					}else{
+						var nb=core.map.path0.p20.neighbors;
+						removeByValue(nb,"p37");
+						var nb=core.map.path0.p37.neighbors;
+						removeByValue(nb,"p20");
+					}
+					if(core.childrenWithId["bridge"].rotation.x==Math.PI*0.5){
+						var nb=core.map.path0.p20.neighbors;
+						for(var i in nb){
+							if(nb[i]=="p44"){
+								return;
+							}
+						}
+						core.map.path0.p20.neighbors.push("p44");
+						core.map.path0.p44.neighbors.push("p20");
+						
+					}else{
+						var nb=core.map.path0.p20.neighbors;
+						removeByValue(nb,"p44");
+						var nb=core.map.path0.p44.neighbors;
+						removeByValue(nb,"p20");
 					}
 				});
 		},
@@ -670,6 +717,132 @@ var map = {
 			z: 2,
 			face: 0,
 			neighbors: ["p29"]
+		},
+		"p31": {
+			id: "p31",
+			x: 3,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p32"],
+			parentId:"bridge"
+		},
+		"p32": {
+			id: "p32",
+			x: 2,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p31","p33"],
+			parentId:"bridge"
+		},
+		"p33": {
+			id: "p33",
+			x: 1,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p32","p34"],
+			parentId:"bridge"
+		},
+		"p34": {
+			id: "p34",
+			x: 0,
+			y: 1,
+			z: 0,
+			face: 0,
+			neighbors: ["p33"],
+			parentId:"bridge"
+		},
+		"p35": {
+			id: "p35",
+			x: 2,
+			y: -1,
+			z: 0,
+			face: 5,
+			neighbors: ["p36"],
+			parentId:"bridge"
+		},
+		"p36": {
+			id: "p36",
+			x: 1,
+			y: -1,
+			z: 0,
+			face: 5,
+			neighbors: ["p37","p35"],
+			parentId:"bridge"
+		},
+		"p37": {
+			id: "p37",
+			x: 0,
+			y: -1,
+			z: 0,
+			face: 5,
+			neighbors: ["p36"],
+			parentId:"bridge"
+		},
+		"p38": {
+			id: "p38",
+			x: 3,
+			y: -3,
+			z: -1,
+			face: 4,
+			neighbors: ["p39"],
+			parentId:"bridge"
+		},
+		"p39": {
+			id: "p39",
+			x: 3,
+			y: -2,
+			z: -1,
+			face: 4,
+			neighbors: ["p38","p40"],
+			parentId:"bridge"
+		},
+		"p40": {
+			id: "p40",
+			x: 3,
+			y: -1,
+			z: -1,
+			face: 4,
+			neighbors: ["p39","p41"],
+			parentId:"bridge"
+		},
+		"p41": {
+			id: "p41",
+			x: 3,
+			y: 0,
+			z: -1,
+			face: 4,
+			neighbors: ["p42","p40"],
+			parentId:"bridge"
+		},
+		"p42": {
+			id: "p42",
+			x: 2,
+			y: 0,
+			z: -1,
+			face: 4,
+			neighbors: ["p43","p41"],
+			parentId:"bridge"
+		},
+		"p43": {
+			id: "p43",
+			x: 1,
+			y: 0,
+			z: -1,
+			face: 4,
+			neighbors: ["p42","p44"],
+			parentId:"bridge"
+		},
+		"p44": {
+			id: "p44",
+			x: 0,
+			y: 0,
+			z: -1,
+			face: 4,
+			neighbors: ["p43"],
+			parentId:"bridge"
 		}
 	},
 	startPoint: "p3"

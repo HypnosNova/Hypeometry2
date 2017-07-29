@@ -535,7 +535,12 @@ core.initPathGraph = function(gameWorld) {
 			obj.position.y -= STEP * 0.49;
 		}else if(pathInfo[i].face==2){
 			obj.position.z -= STEP * 0.49;
-//			console.log(obj.parent==gameWorld.scene)
+		}else if(pathInfo[i].face==4){
+			obj.rotation.x = Math.PI;
+			obj.position.z += STEP * 0.49;
+		}else if(pathInfo[i].face==5){
+			obj.rotation.x = Math.PI / 2;
+			obj.position.y += STEP * 0.49;
 		}
 		if(pathInfo[i].rx){
 			obj.rotation.x +=pathInfo[i].rx;
@@ -550,13 +555,13 @@ core.initPathGraph = function(gameWorld) {
 			obj.scale.x=pathInfo[i].rx;
 		}
 		if(pathInfo[i].sy){
-			console.log(pathInfo[i].sy)
 			obj.scale.y=pathInfo[i].sy;
 		}
 		if(pathInfo[i].cannotClick){
 			obj.isPenetrated=true;
 		}else{
 			obj.onClick = function(obj) {
+				console.log(obj.object.pathId)
 				var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
 				//console.log(path)
 				if(path===false){
