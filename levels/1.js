@@ -208,6 +208,7 @@ var map = {
 		materialId: "m3"
 	}, {
 		type: "turntable",
+		id:"turn",
 		x: 8,
 		y: 8,
 		z: 0,

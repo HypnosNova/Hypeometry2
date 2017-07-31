@@ -140,6 +140,7 @@ core.Obj.Turntable = function(options) {
 	group.position.set(options.x * STEP || 0, options.y * STEP || 0, options.z * STEP || 0);
 	group.rotation.set(options.rx || 0, options.ry || 0, options.rz || 0);
 	this.object = group;
+	this.object.owner=that;
 	let axisG = new THREE.BoxBufferGeometry(STEP, STEP / 4, STEP / 4);
 	let axisM;
 	if(options.axisMaterial) {
@@ -213,6 +214,9 @@ core.Obj.Turntable = function(options) {
 	group.add(pole4);
 
 	hoop.onDown = axis.onDown = rod1.onDown = rod2.onDown = pole1.onDown = pole2.onDown = pole3.onDown = pole4.onDown = function() {
+		if(that.disable){
+			return;
+		}
 		that.isDown = true;
 		var canvasXY = $$.sceneCoordinateToCanvasCoordinate(group);
 		if(event.touches) {
@@ -243,6 +247,58 @@ core.Obj.Turntable = function(options) {
 	hoop.onClick = axis.onClick = rod1.onClick = rod2.onClick = pole1.onClick = pole2.onClick = pole3.onClick = pole4.onClick = function() {
 		dragEnd();
 	}
+	
+	this.disable=false;
+	
+	this.becomeDisable=function(){
+		if(that.disable){
+			return;
+		}
+		that.disable=true;
+		new TWEEN.Tween(rod1.scale).to({
+			y:0.5
+		},500).start();
+		new TWEEN.Tween(rod2.scale).to({
+			y:0.5
+		},500).start();
+		new TWEEN.Tween(pole1.position).to({
+			y:pole1.position.y/2
+		},500).start();
+		new TWEEN.Tween(pole2.position).to({
+			y:pole2.position.y/2
+		},500).start();
+		new TWEEN.Tween(pole3.position).to({
+			z:pole3.position.z/2
+		},500).start();
+		new TWEEN.Tween(pole4.position).to({
+			z:pole4.position.z/2
+		},500).start();
+	};
+	
+	this.becomeAble=function(){
+		if(!that.disable){
+			return;
+		}
+		that.disable=false;
+		new TWEEN.Tween(rod1.scale).to({
+			y:1
+		},500).start();
+		new TWEEN.Tween(rod2.scale).to({
+			y:1
+		},500).start();
+		new TWEEN.Tween(pole1.position).to({
+			y:pole1.position.y*2
+		},500).start();
+		new TWEEN.Tween(pole2.position).to({
+			y:pole2.position.y*2
+		},500).start();
+		new TWEEN.Tween(pole3.position).to({
+			z:pole3.position.z*2
+		},500).start();
+		new TWEEN.Tween(pole4.position).to({
+			z:pole4.position.z*2
+		},500).start();
+	};
 
 	function dragEnd(e) {
 		that.isDown = false;
@@ -518,7 +574,7 @@ core.initMapLights = function(gameWorld) {
 
 core.initPathGraph = function(gameWorld) {
 	let STEP = game.settings.blockSize;
-	var pathInfo = core.map["path"+core.map.currentPath];
+	var pathInfo = core.map["path" + core.map.currentPath];
 	var graph = new core.PathGraph(pathInfo);
 	for(var i in pathInfo) {
 		let cubeGeometry = new THREE.PlaneBufferGeometry(STEP, STEP);
@@ -530,48 +586,57 @@ core.initPathGraph = function(gameWorld) {
 		var obj = core.createCube(pathInfo[i], cubeGeometry, core.map.materials[0], contain);
 		obj.pathId = pathInfo[i].id;
 		pathInfo[i].obj = obj;
-		if(pathInfo[i].face===0){
+		if(pathInfo[i].face === 0) {
 			obj.rotation.x = -Math.PI / 2;
 			obj.position.y -= STEP * 0.49;
-		}else if(pathInfo[i].face==2){
+		} else if(pathInfo[i].face == 2) {
 			obj.position.z -= STEP * 0.49;
-		}else if(pathInfo[i].face==4){
+		} else if(pathInfo[i].face == 4) {
 			obj.rotation.x = Math.PI;
 			obj.position.z += STEP * 0.49;
-		}else if(pathInfo[i].face==5){
+		} else if(pathInfo[i].face == 5) {
 			obj.rotation.x = Math.PI / 2;
 			obj.position.y += STEP * 0.49;
 		}
-		if(pathInfo[i].rx){
-			obj.rotation.x +=pathInfo[i].rx;
+		if(pathInfo[i].rx) {
+			obj.rotation.x += pathInfo[i].rx;
 		}
-		if(pathInfo[i].ry){
-			obj.rotation.y +=pathInfo[i].ry;
+		if(pathInfo[i].ry) {
+			obj.rotation.y += pathInfo[i].ry;
 		}
-		if(pathInfo[i].rz){
-			obj.rotation.z +=pathInfo[i].rz;
+		if(pathInfo[i].rz) {
+			obj.rotation.z += pathInfo[i].rz;
 		}
-		if(pathInfo[i].sx){
-			obj.scale.x=pathInfo[i].rx;
+		if(pathInfo[i].sx) {
+			obj.scale.x = pathInfo[i].rx;
 		}
-		if(pathInfo[i].sy){
-			obj.scale.y=pathInfo[i].sy;
+		if(pathInfo[i].sy) {
+			obj.scale.y = pathInfo[i].sy;
 		}
-		if(pathInfo[i].cannotClick){
-			obj.isPenetrated=true;
-		}else{
+		if(pathInfo[i].cannotClick) {
+			obj.isPenetrated = true;
+		} else {
 			obj.onClick = function(obj) {
-				console.log(obj.object.pathId)
-				var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
-				//console.log(path)
-				if(path===false){
-					return;
+				if(core.charactor.isWalking == false) {
+					var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
+					if(path === false) {
+						core.charactor.walkingPath = [core.charactor.walkingPath[0]];
+						return;
+					}
+					path = path.splice(1);
+					core.moveCharacter(path);
+				}else{
+					var path = graph.findPath(core.charactor.walkingPath[0], obj.object.pathId);
+					if(path === false) {
+						core.charactor.walkingPath = [core.charactor.walkingPath[0]];
+						return;
+					}
+					core.charactor.walkingPath=path;
 				}
-				path = path.splice(1);
-				core.moveCharacter(path);
+
 			}
 		}
-		
+
 	}
 };
 
@@ -581,34 +646,26 @@ core.moveCharacter = function(arr) {
 		core.charactor.isWalking = false;
 		return;
 	}
-	//	console.log(arr)
-	//	if(core.charactor.walkingPath.length > 1) {
-	//		core.charactor.walkingPath = core.charactor.walkingPath.splice(0, 1);
-	//	} else if(core.charactor.walkingPath.length == 1) {
-	//		core.charactor.walkingPath.concat(arr);
-	//	} else {
-	//		core.charactor.walkingPath = arr;
-	//	}
 	core.charactor.walkingPath = arr;
 	core.charactor.isWalking = true;
 	nextP = core.map["path" + core.map.currentPath][arr[0]];
-	var vec=new THREE.Vector3(nextP.x * STEP,nextP.y * STEP,nextP.z * STEP);
-	if(nextP.parentId){
+	var vec = new THREE.Vector3(nextP.x * STEP, nextP.y * STEP, nextP.z * STEP);
+	if(nextP.parentId) {
 		vec = core.childrenWithId[nextP.parentId].localToWorld(vec);
 	}
-	var time=game.settings.moveSpeed;
-	
-	var prevP=core.map["path" + core.map.currentPath][core.charactor.currentPath];
+	var time = game.settings.moveSpeed;
 
-	if(prevP.changeSpeed&&prevP.changeSpeed[nextP.id]){
-		var str=prevP.changeSpeed[nextP.id];
-		if(typeof str =="number"){
-			time=str;
-		}else if(str =="auto"){
-			time=time/STEP*core.charactor.position.distanceTo(vec);
+	var prevP = core.map["path" + core.map.currentPath][core.charactor.currentPath];
+
+	if(prevP.changeSpeed && prevP.changeSpeed[nextP.id]) {
+		var str = prevP.changeSpeed[nextP.id];
+		if(typeof str == "number") {
+			time = str;
+		} else if(str == "auto") {
+			time = time / STEP * core.charactor.position.distanceTo(vec);
 		}
 	}
-	
+
 	new TWEEN.Tween(core.charactor.position)
 		.to(vec, time)
 		.onComplete(function() {
@@ -629,8 +686,8 @@ core.loadMapResource = function(callback) {
 };
 
 core.PathGraph = function(path) {
-	var that=this;
-	this.neighbors = path;//this.neighbors = {}; // Key = vertex, value = array of neighbors.
+	var that = this;
+	this.neighbors = path; //this.neighbors = {}; // Key = vertex, value = array of neighbors.
 	this.addEdge = function(u, v) {
 		if(neighbors[u] === undefined) { // Add the edge u -> v.
 			neighbors[u] = [];
