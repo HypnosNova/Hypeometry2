@@ -527,10 +527,14 @@ core.initMapMaterials = function(gameWorld) {
 			if(item.mapId != null) {
 				core.map.materials[i] = new THREE.MeshLambertMaterial({
 					color: item.color,
+					transparent:true,
+					opacity:core.map.materials[i].opacity==null?1:core.map.materials[i],
 					map: $$.Loader.RESOURCE.textures[item.mapId]
 				});
 			} else {
 				core.map.materials[i] = new THREE.MeshLambertMaterial({
+					transparent:true,
+					opacity:core.map.materials[i].opacity==null?1:core.map.materials[i],
 					color: item.color
 				});
 			}
@@ -538,10 +542,14 @@ core.initMapMaterials = function(gameWorld) {
 			if(item.mapId) {
 				core.map.materials[i] = new THREE.MeshBasicMaterial({
 					color: item.color,
+					opacity:core.map.materials[i].opacity==null?1:core.map.materials[i],
+					transparent:true,
 					map: $$.Loader.RESOURCE.textures[core.map.textures[item.mapId]]
 				});
 			} else {
 				core.map.materials[i] = new THREE.MeshBasicMaterial({
+					transparent:true,
+					opacity:core.map.materials[i].opacity==null?1:core.map.materials[i],
 					color: item.color
 				});
 			}
@@ -583,7 +591,16 @@ core.initPathGraph = function(gameWorld) {
 		} else {
 			var contain = gameWorld.scene;
 		}
-		var obj = core.createCube(pathInfo[i], cubeGeometry, core.map.materials[0], contain);
+		var m;
+		if(pathInfo[i].materialId) {
+			m = core.map.materials[pathInfo[i].materialId];
+		} else {
+			for(let i in core.map.materials) {
+				m = core.map.materials[i];
+				break;
+			}
+		}
+		var obj = core.createCube(pathInfo[i], cubeGeometry, m, contain);
 		obj.pathId = pathInfo[i].id;
 		pathInfo[i].obj = obj;
 		if(pathInfo[i].face === 0) {

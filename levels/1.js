@@ -375,9 +375,15 @@ var map = {
 			type: "L",
 			color: 0xffffff,
 			mapId: "img/level1ground.png"
+		},
+		m4:{
+			type: "B",
+			color: 0xffffff,
+			opacity:0,
+			mapId: "img/null.png"
 		}
 	},
-	textures: ["img/path/texture0.jpg", "img/common/border.png", "img/level1ground.png"],
+	textures: ["img/path/texture0.jpg", "img/common/border.png", "img/level1ground.png","img/null.png"],
 	lights: {
 		areaLight: {
 			color: 0x444444,
@@ -420,7 +426,8 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p2","p5"]
+			neighbors: ["p2","p5"],
+			materialId:"m4"
 		},
 		"p2": {
 			id: "p2",
@@ -428,7 +435,8 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p1", "p3"]
+			neighbors: ["p1", "p3"],
+			materialId:"m4"
 		},
 		"p3": {
 			id: "p3",
@@ -436,7 +444,8 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p2","p4"]
+			neighbors: ["p2","p4"],
+			materialId:"m4"
 		},
 		"p4": {
 			id: "p4",
@@ -444,7 +453,8 @@ var map = {
 			y: 1,
 			z: 0,
 			face: 0,
-			neighbors: ["p3"]
+			neighbors: ["p3"],
+			materialId:"m4"
 		},
 		"p5": {
 			id: "p5",
@@ -452,7 +462,8 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p1","p6"]
+			neighbors: ["p1","p6"],
+			materialId:"m4"
 		},
 		"p6": {
 			id: "p6",
@@ -460,7 +471,8 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p5","p7"]
+			neighbors: ["p5","p7"],
+			materialId:"m4"
 		},
 		"p7": {
 			id: "p7",
@@ -468,7 +480,8 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p6","p8"]
+			neighbors: ["p6","p8"],
+			materialId:"m4"
 		},
 		"p8": {
 			id: "p8",
@@ -476,7 +489,8 @@ var map = {
 			y: 9,
 			z: 8,
 			face: 0,
-			neighbors: ["p7","p9"]
+			neighbors: ["p7","p9"],
+			materialId:"m4"
 		},
 		"p9": {
 			id: "p9",
@@ -484,7 +498,8 @@ var map = {
 			y: 9,
 			z: 7,
 			face: 0,
-			neighbors: ["p8","p10"]
+			neighbors: ["p8","p10"],
+			materialId:"m4"
 		},
 		"p10": {
 			id: "p10",
@@ -492,7 +507,8 @@ var map = {
 			y: 9,
 			z: 6,
 			face: 0,
-			neighbors: ["p9","p11"]
+			neighbors: ["p9","p11"],
+			materialId:"m4"
 		},
 		"p11": {
 			id: "p11",
@@ -500,7 +516,8 @@ var map = {
 			y: 9,
 			z: 5,
 			face: 0,
-			neighbors: ["p10","p12"]
+			neighbors: ["p10","p12"],
+			materialId:"m4"
 		},
 		"p12": {
 			id: "p12",
@@ -508,7 +525,8 @@ var map = {
 			y: 9,
 			z: 4,
 			face: 0,
-			neighbors: ["p11"]
+			neighbors: ["p11"],
+			materialId:"m4"
 		},
 		"p13": {
 			id: "p13",
@@ -517,7 +535,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p14"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p14": {
 			id: "p14",
@@ -526,7 +545,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p13","p15"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p15": {
 			id: "p15",
@@ -535,7 +555,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p14","p16"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p16": {
 			id: "p16",
@@ -544,7 +565,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p15","p17"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p17": {
 			id: "p17",
@@ -553,7 +575,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p16","p18"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p18": {
 			id: "p18",
@@ -562,7 +585,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p17","p19"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p19": {
 			id: "p19",
@@ -571,7 +595,8 @@ var map = {
 			z: 1,
 			face: 2,
 			neighbors: ["p18"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p20": {
 			id: "p20",
@@ -579,7 +604,8 @@ var map = {
 			y: 9,
 			z: 0,
 			face: 0,
-			neighbors: ["p21"]
+			neighbors: ["p21"],
+			materialId:"m4"
 		},
 		"p21": {
 			id: "p21",
@@ -587,7 +613,8 @@ var map = {
 			y: 17,
 			z: 8,
 			face: 0,
-			neighbors: ["p20","p22"]
+			neighbors: ["p20","p22"],
+			materialId:"m4"
 		},
 		"p22": {
 			id: "p22",
@@ -595,7 +622,8 @@ var map = {
 			y: 17,
 			z: 8,
 			face: 0,
-			neighbors: ["p21","p23"]
+			neighbors: ["p21","p23"],
+			materialId:"m4"
 		},
 		"p23": {
 			id: "p23",
@@ -603,7 +631,8 @@ var map = {
 			y: 17,
 			z: 8,
 			face: 0,
-			neighbors: ["p22","p24"]
+			neighbors: ["p22","p24"],
+			materialId:"m4"
 		},
 		"p24": {
 			id: "p24",
@@ -614,7 +643,8 @@ var map = {
 			neighbors: ["p23","tm1"],
 			changeSpeed:{
 				"tm1":"auto"
-			}
+			},
+			materialId:"m4"
 		},
 		"tm1":{
 			id: "tm1",
@@ -629,7 +659,8 @@ var map = {
 			changeSpeed:{
 				"p24":"auto",
 				"p25":"auto"
-			}
+			},
+			materialId:"m4"
 		},
 		"p25": {
 			id: "p25",
@@ -643,7 +674,8 @@ var map = {
 			changeSpeed:{
 				"tm1":"auto",
 				"p26":"auto"
-			}
+			},
+			materialId:"m4"
 		},
 		"p26": {
 			id: "p26",
@@ -657,7 +689,8 @@ var map = {
 			changeSpeed:{
 				"p25":"auto",
 				"p27":"auto",
-			}
+			},
+			materialId:"m4"
 		},
 		"p27": {
 			id: "p27",
@@ -671,7 +704,8 @@ var map = {
 			changeSpeed:{
 				"p26":"auto",
 				"p28":"auto",
-			}
+			},
+			materialId:"m4"
 		},"p28": {
 			id: "p28",
 			x: 6,
@@ -683,7 +717,8 @@ var map = {
 			neighbors: ["p27","tm2"],
 			changeSpeed:{
 				"tm2":"auto"
-			}
+			},
+			materialId:"m4"
 		},
 		"tm2":{
 			id: "tm2",
@@ -698,7 +733,8 @@ var map = {
 			changeSpeed:{
 				"p28":"auto",
 				"p29":"auto"
-			}
+			},
+			materialId:"m4"
 		},
 		"p29": {
 			id: "p29",
@@ -709,7 +745,8 @@ var map = {
 			neighbors: ["tm2","p30"],
 			changeSpeed:{
 				"tm2":"auto"
-			}
+			},
+			materialId:"m4"
 		},
 		"p30": {
 			id: "p30",
@@ -717,7 +754,8 @@ var map = {
 			y: 21,
 			z: 2,
 			face: 0,
-			neighbors: ["p29"]
+			neighbors: ["p29"],
+			materialId:"m4"
 		},
 		"p31": {
 			id: "p31",
@@ -726,7 +764,8 @@ var map = {
 			z: 0,
 			face: 0,
 			neighbors: ["p32"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p32": {
 			id: "p32",
@@ -735,7 +774,8 @@ var map = {
 			z: 0,
 			face: 0,
 			neighbors: ["p31","p33"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p33": {
 			id: "p33",
@@ -744,7 +784,8 @@ var map = {
 			z: 0,
 			face: 0,
 			neighbors: ["p32","p34"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p34": {
 			id: "p34",
@@ -753,7 +794,8 @@ var map = {
 			z: 0,
 			face: 0,
 			neighbors: ["p33"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p35": {
 			id: "p35",
@@ -762,7 +804,8 @@ var map = {
 			z: 0,
 			face: 5,
 			neighbors: ["p36"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p36": {
 			id: "p36",
@@ -771,7 +814,8 @@ var map = {
 			z: 0,
 			face: 5,
 			neighbors: ["p37","p35"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p37": {
 			id: "p37",
@@ -780,7 +824,8 @@ var map = {
 			z: 0,
 			face: 5,
 			neighbors: ["p36"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p38": {
 			id: "p38",
@@ -789,7 +834,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p39"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p39": {
 			id: "p39",
@@ -798,7 +844,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p38","p40"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p40": {
 			id: "p40",
@@ -807,7 +854,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p39","p41"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p41": {
 			id: "p41",
@@ -816,7 +864,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p42","p40"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p42": {
 			id: "p42",
@@ -825,7 +874,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p43","p41"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p43": {
 			id: "p43",
@@ -834,7 +884,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p42","p44"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		},
 		"p44": {
 			id: "p44",
@@ -843,7 +894,8 @@ var map = {
 			z: -1,
 			face: 4,
 			neighbors: ["p43"],
-			parentId:"bridge"
+			parentId:"bridge",
+			materialId:"m4"
 		}
 	},
 	startPoint: "p3"
