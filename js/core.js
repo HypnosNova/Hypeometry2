@@ -259,22 +259,22 @@ core.Obj.Turntable = function(options) {
 		that.disable=true;
 		new TWEEN.Tween(rod1.scale).to({
 			y:0.5
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(rod2.scale).to({
 			y:0.5
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole1.position).to({
 			y:pole1.position.y/2
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole2.position).to({
 			y:pole2.position.y/2
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole3.position).to({
 			z:pole3.position.z/2
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole4.position).to({
 			z:pole4.position.z/2
-		},500).start();
+		},350).start();
 	};
 	
 	this.becomeAble=function(){
@@ -284,22 +284,22 @@ core.Obj.Turntable = function(options) {
 		that.disable=false;
 		new TWEEN.Tween(rod1.scale).to({
 			y:1
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(rod2.scale).to({
 			y:1
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole1.position).to({
 			y:pole1.position.y*2
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole2.position).to({
 			y:pole2.position.y*2
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole3.position).to({
 			z:pole3.position.z*2
-		},500).start();
+		},350).start();
 		new TWEEN.Tween(pole4.position).to({
 			z:pole4.position.z*2
-		},500).start();
+		},350).start();
 	};
 
 	function dragEnd(e) {
