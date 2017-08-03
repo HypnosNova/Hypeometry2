@@ -33,6 +33,8 @@ core.createPlane = function(item, g, m, container) {
 	cube.position.set(item.x * STEP || 0, (item.y + 5 / 12) * STEP || 0, item.z * STEP || 0);
 	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	cube.scale.y = 1 / 6;
+	cube.scale.x=item.sx||1;
+	cube.scale.z=item.sx||1;
 	container.add(cube);
 	return cube;
 };
@@ -140,7 +142,7 @@ core.Obj.Turntable = function(options) {
 	group.position.set(options.x * STEP || 0, options.y * STEP || 0, options.z * STEP || 0);
 	group.rotation.set(options.rx || 0, options.ry || 0, options.rz || 0);
 	this.object = group;
-	this.object.owner=that;
+	group.owner=that;
 	let axisG = new THREE.BoxBufferGeometry(STEP, STEP / 4, STEP / 4);
 	let axisM;
 	if(options.axisMaterial) {
@@ -580,6 +582,56 @@ core.initMapLights = function(gameWorld) {
 	}
 };
 
+core.showEndBoard=function(){
+	var info=core.map.endBoard;
+	let w = $$.getWorldWidth();
+	let h = $$.getWorldHeight();
+	let canvas = document.createElement("canvas");
+	canvas.width = w;
+	canvas.height = h;
+	let ctx = canvas.getContext("2d");
+	ctx.fillStyle = core.map.levelBoard.backgroundColor;
+	ctx.fillRect(0, 0, w, h);
+	ctx.textAlign = "center";
+	for(let item of info.info) {
+		if(item.type == "text") {
+			ctx.font = item.size * h + "px " + item.family + " " + item.weight;
+			ctx.fillStyle = item.color;
+			let width = ctx.measureText(item.text).width;
+			ctx.fillText(item.text, w / 2, h * item.y);
+		} else if(item.type == "pic") {
+			let imgWidth = $$.Loader.RESOURCE.textures[item.src].image.naturalWidth;
+			let imgHeight = $$.Loader.RESOURCE.textures[item.src].image.naturalHeight;
+			let newHeight = item.height * h;
+			let newWidth = newHeight / imgHeight * imgWidth;
+			ctx.drawImage($$.Loader.RESOURCE.textures[item.src].image, (w - newWidth) / 2, h * item.y - newHeight / 2, newWidth, newHeight);
+
+		}
+	}
+
+	let texture = new THREE.CanvasTexture(canvas);
+	let geometry = new THREE.PlaneBufferGeometry(w, h, 2);
+	let material = new THREE.MeshBasicMaterial({
+		color: 0xffffff,
+		map: texture,
+		transparent: true,
+	});
+	let plane = new THREE.Mesh(geometry, material);
+
+	plane.position.set(gameWorld.camera.position.x - 100, gameWorld.camera.position.y - 100, gameWorld.camera.position.z - 100);
+	plane.lookAt(gameWorld.camera.position);
+	gameWorld.scene.add(plane);
+	plane.material.opacity=0;
+	new TWEEN.Tween(plane.material)
+		.to({
+			opacity: 1
+		}, core.map.levelBoard.duration)
+		.onComplete(function() {
+//			gameWorld.scene.remove(plane);
+		})
+		.start();
+}
+
 core.initPathGraph = function(gameWorld) {
 	let STEP = game.settings.blockSize;
 	var pathInfo = core.map["path" + core.map.currentPath];
@@ -634,6 +686,7 @@ core.initPathGraph = function(gameWorld) {
 			obj.isPenetrated = true;
 		} else {
 			obj.onClick = function(obj) {
+				console.log(obj.object.pathId)
 				if(core.charactor.isWalking == false) {
 					var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
 					if(path === false) {
@@ -682,8 +735,13 @@ core.moveCharacter = function(arr) {
 			time = time / STEP * core.charactor.position.distanceTo(vec);
 		}
 	}
-	if(core.charactor.walkingPath[0].onComing){
-		core.charactor.walkingPath[0].onComing();
+	
+	
+	if(nextP.onComing){
+		nextP.onComing();
+	}
+	if(prevP.onLeaving){
+		prevP.onLeaving();
 	}
 	new TWEEN.Tween(core.charactor.position)
 		.to(vec, time)
@@ -692,6 +750,12 @@ core.moveCharacter = function(arr) {
 //		})
 		.start()
 		.onComplete(function() {
+			if(nextP.hasCome){
+				nextP.hasCome();
+			}
+			if(prevP.hasLeft){
+				prevP.hasLeft();
+			}
 			core.charactor.currentPath = core.charactor.walkingPath[0];
 			arr = core.charactor.walkingPath.splice(1);
 			core.charactor.walkingPath = [];
