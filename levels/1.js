@@ -526,7 +526,10 @@ var map = {
 			z: 4,
 			face: 0,
 			neighbors: ["p11"],
-			materialId:"m4"
+			materialId:"m4",
+			onComing:function(){
+				core.childrenWithId.bridge.owner.becomeAble();
+			}
 		},
 		"p13": {
 			id: "p13",
@@ -536,7 +539,10 @@ var map = {
 			face: 2,
 			neighbors: ["p14"],
 			parentId:"bridge",
-			materialId:"m4"
+			materialId:"m4",
+			onComing:function(){
+				core.childrenWithId.bridge.owner.becomeDisable();
+			}
 		},
 		"p14": {
 			id: "p14",

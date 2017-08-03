@@ -682,12 +682,15 @@ core.moveCharacter = function(arr) {
 			time = time / STEP * core.charactor.position.distanceTo(vec);
 		}
 	}
-
+	if(core.charactor.walkingPath[0].onComing){
+		core.charactor.walkingPath[0].onComing();
+	}
 	new TWEEN.Tween(core.charactor.position)
 		.to(vec, time)
-		.onComplete(function() {
-			gameWorld.scene.remove(plane);
-		}).start()
+//		.onComplete(function() {
+//			gameWorld.scene.remove(plane);
+//		})
+		.start()
 		.onComplete(function() {
 			core.charactor.currentPath = core.charactor.walkingPath[0];
 			arr = core.charactor.walkingPath.splice(1);
