@@ -686,7 +686,7 @@ core.initPathGraph = function(gameWorld) {
 			obj.isPenetrated = true;
 		} else {
 			obj.onClick = function(obj) {
-				console.log(obj.object.pathId)
+				console.log(obj.object.pathId,core.charactor.currentPath)
 				if(core.charactor.isWalking == false) {
 					var path = graph.findPath(core.charactor.currentPath, obj.object.pathId);
 					if(path === false) {
@@ -736,13 +736,23 @@ core.moveCharacter = function(arr) {
 		}
 	}
 	
-	
-	if(nextP.onComing){
-		nextP.onComing();
+	var canMove=false;
+	for(var item of prevP.neighbors){
+		if(item==nextP.id){
+			canMove=true;
+		}
 	}
 	if(prevP.onLeaving){
 		prevP.onLeaving();
 	}
+	if(!canMove){
+		core.charactor.isWalking = false;
+		return;
+	}
+	if(nextP.onComing){
+		nextP.onComing();
+	}
+	
 	new TWEEN.Tween(core.charactor.position)
 		.to(vec, time)
 //		.onComplete(function() {
