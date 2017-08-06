@@ -1,4 +1,4 @@
-﻿{
+{
     "@platforms": ["android", "iPhone", "iPad"],
     "id": "H558FB158",/*应用的标识，创建应用时自动生成，勿手动修改*/
     "name": "Hypeometry2",/*应用名称，程序桌面图标名称*/
@@ -199,5 +199,46 @@
                 }
             }
         }
-    }
+    },
+	"dependencies": {
+		"pages": {
+			"index.html": {
+				"resources": [
+					"js/main.js",
+					"lib/bas.js",
+					"img/common/border.png",
+					"img/level1ground.png",
+					"js/game.js",
+					"lib/opentype.min.js",
+					"lib/threeQuery.js",
+					"levels/1.js",
+					"lib/TweenMax.min.js",
+					"lib/loader/TTFLoader.js",
+					"lib/three.min.js",
+					"img/path/texture0.jpg",
+					"lib/tween.js",
+					"js/core.js",
+					"lib/controls/OrbitControls.js",
+					"img/endPoint.png",
+					"img/null.png",
+					"levels/2.js",
+					"lib/threeQuery.min.js",
+					"img/level2ground.png"
+				],
+				"refer": [],
+				"priority": 0
+			}
+		},
+		"idle": {
+			"resources": [
+				"广度遍历.html",
+				"img/common/gui.png",
+				"js/levelSelect.js",
+				"font/loadFont.js",
+				"img/gui.svg",
+				"js/load.js",
+				"font/loadFont.ttf"
+			]
+		}
+	},"fullscreen":true
 }
