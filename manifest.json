@@ -218,7 +218,11 @@
 					"img/path/texture0.jpg",
 					"lib/tween.js",
 					"js/core.js",
-					"lib/controls/OrbitControls.js"
+					"lib/controls/OrbitControls.js",
+					"img/endPoint.png",
+					"img/null.png",
+					"levels/2.js",
+					"lib/threeQuery.min.js"
 				],
 				"refer": [],
 				"priority": 0
@@ -230,7 +234,6 @@
 				"img/common/gui.png",
 				"js/levelSelect.js",
 				"font/loadFont.js",
-				"lib/threeQuery.min.js",
 				"img/gui.svg",
 				"js/load.js",
 				"font/loadFont.ttf"

@@ -217,8 +217,8 @@ var map = {
 		height: 4
 	}, {
 		type: "plane",
-		sx: 1.3,
-		sz: 1.3,
+		sx: 1.3333,
+		sz: 1.3333,
 		x: 6,
 		y: 20,
 		z: 2,
@@ -239,25 +239,25 @@ var map = {
 		y: 8,
 		z: 0,
 		funcMove: function(e, angle) {
-			var nb = core.map.path0.p12.neighbors;
+			let nb = core.map.path0.p12.neighbors;
 			removeByValue(nb, "p13");
-			var nb = core.map.path0.p13.neighbors;
+			nb = core.map.path0.p13.neighbors;
 			removeByValue(nb, "p12");
-			var nb = core.map.path0.p19.neighbors;
+			nb = core.map.path0.p19.neighbors;
 			removeByValue(nb, "p20");
-			var nb = core.map.path0.p20.neighbors;
+			nb = core.map.path0.p20.neighbors;
 			removeByValue(nb, "p19");
-			var nb = core.map.path0.p20.neighbors;
+			nb = core.map.path0.p20.neighbors;
 			removeByValue(nb, "p34");
-			var nb = core.map.path0.p34.neighbors;
+			nb = core.map.path0.p34.neighbors;
 			removeByValue(nb, "p20");
-			var nb = core.map.path0.p20.neighbors;
+			nb = core.map.path0.p20.neighbors;
 			removeByValue(nb, "p37");
-			var nb = core.map.path0.p37.neighbors;
+			nb = core.map.path0.p37.neighbors;
 			removeByValue(nb, "p20");
-			var nb = core.map.path0.p20.neighbors;
+			nb = core.map.path0.p20.neighbors;
 			removeByValue(nb, "p44");
-			var nb = core.map.path0.p44.neighbors;
+			nb = core.map.path0.p44.neighbors;
 			removeByValue(nb, "p20");
 			core.childrenWithId["bridge"].rotation.x = angle;
 		},
@@ -948,13 +948,4 @@ var map = {
 		}
 	},
 	startPoint: "p3"
-}
-
-function removeByValue(arr, val) {
-	for(var i = 0; i < arr.length; i++) {
-		if(arr[i] == val) {
-			arr.splice(i, 1);
-			break;
-		}
-	}
 }
