@@ -19,7 +19,8 @@
 			"img/endPoint.png",
 			"img/null.png",
 			"levels/2.js",
-			"lib/threeQuery.min.js"
+			"lib/threeQuery.min.js",
+			"img/level2ground.png"
 		]
 	}
 }

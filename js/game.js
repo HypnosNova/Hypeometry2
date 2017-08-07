@@ -1,6 +1,6 @@
 var game={};
 game.settings={
-	blockSize:30,
+	blockSize:24,
 	moveSpeed:300
 }
 
