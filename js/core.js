@@ -40,20 +40,7 @@ let roundRectGeometry = new THREE.ExtrudeBufferGeometry(roundedRectShape, {
 });
 roundRectGeometry.center();
 
-//let circleRadius = STEP/6*5;
-//let circleShape = new THREE.Shape();
-//circleShape.moveTo( -STEP/2, STEP/2);
-//circleShape.lineTo( -STEP/2, STEP/3);
-//circleShape.absarc( -STEP/2, -STEP/2, STEP*5/6, Math.PI/2,0, true);
-//circleShape.lineTo( STEP/2, -STEP/2);
-//circleShape.lineTo( STEP/2, STEP/2);
-//circleShape.lineTo( -STEP/2, STEP/2);
-//let arcGeometry = new THREE.ExtrudeBufferGeometry( circleShape, {
-//	steps:1,
-//	amount :STEP,
-//	bevelEnabled :false
-//});
-//arcGeometry.center();
+
 
 var core = {};
 core.map = {};
@@ -292,6 +279,90 @@ core.createStair = function(item, m, container) {
 	container.add(group);
 	return group;
 };
+
+core.createLinearBar=function(item, container,gameWorld){
+	var _mouse = new THREE.Vector2();
+	var _raycaster = new THREE.Raycaster();
+	let group = new THREE.Group();
+	group.position.set(item.x * STEP || 0, item.y * STEP || 0, item.z * STEP || 0);
+	group.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
+	container.add(group);
+
+	for(let child of item.children) {
+		let material;
+		if(child.materialId) {
+			material = core.map.materials[child.materialId];
+		} else {
+			for(let i in core.map.materials) {
+				material = core.map.materials[i];
+				break;
+			}
+		}
+		var obj;
+		if(child.type == "cube") {
+			obj=core.createCube(child, material, group);
+		} else if(child.type == "plane") {
+			obj=core.createPlane(child, material, group);
+		} else if(item.type == "ground") {
+			obj=core.createGround(item, material, group);
+		} else if(child.type == "tri") {
+			obj=core.createTri(child, material, group);
+		} else if(child.type == "stick") {
+			obj=core.createStick(child, material, group);
+		} else if(child.type == "stair") {
+			obj=core.createStair(child, material, group);
+		} else if(child.type == "turntable") {
+			obj=core.createTurntable(child, group);
+		} else if(child.type == "arc") {
+			obj=core.core.createArc(child, material, group);
+		} else if(child.type == "cylinder") {
+			obj=core.createCylinder(child, material, group);
+		} else if(child.type == "roof") {
+			obj=core.createRoof(child, child.materialArr, group);
+		} else if(child.type == "roundRect") {
+			obj=core.createRoundRect(child, material, group);
+		} else if(child.type == "group") {
+			obj=core.createGroup(child, group);
+		} else {
+			obj=core.createCube(child, material, group);
+		}
+		
+		if(child.dragPart){
+			obj.onDown=function(){
+				group.isDown=true;
+			}
+			obj.onUp=function(){
+				group.isDown=false;
+			}
+			
+			$$.global.canvasDom.addEventListener("mousemove",function(e){
+				if(group.isDown){
+					var rect = $$.global.canvasDom.getBoundingClientRect();
+					_mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
+					_mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
+					_raycaster.setFromCamera( _mouse, gameWorld.camera );
+					console.log(_raycaster)
+				}
+				
+			});
+			
+			$$.global.canvasDom.addEventListener("touchmove",function(e){
+				_raycaster.setFromCamera( _mouse, gameWorld.camera );
+				var intersects = _raycaster.intersectObjects(group,true);
+				if(group.isDown){
+					var rect = $$.global.canvasDom.getBoundingClientRect();
+					_mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
+					_mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
+					_raycaster.setFromCamera( _mouse, gameWorld.camera );
+					console.log(_raycaster)
+				}
+			});
+		}
+	}
+	
+	
+	return group;
+}
 
 core.createCharacter = function(gameWorld) {
 	var geometry = new THREE.CylinderBufferGeometry(STEP / 3, 1, STEP, 16);
@@ -1034,8 +1105,7 @@ core.createTurntable = function(item, container) {
 		container.add(turntable.object);
 		return turntable.object;
 	}
-
-}
+};
 
 core.createGroup = function(item, container) {
 	let group = new THREE.Group();
@@ -1172,6 +1242,8 @@ core.initMapBlocks = function(gameWorld) {
 			obj = core.createRoof(item, item.materialArr, gameWorld.scene);
 		} else if(item.type == "roundRect") {
 			obj = core.createRoundRect(item, material, gameWorld.scene);
+		} else if(item.type == "linear") {
+			obj = core.createLinearBar(item, gameWorld.scene,gameWorld);
 		} else if(item.type == "group") {
 			obj = core.createGroup(item, gameWorld.scene);
 		} else {

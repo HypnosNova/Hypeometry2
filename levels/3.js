@@ -191,6 +191,16 @@ var map = {
 		x:-1,
 		sy:10,
 		sz:3,
+	},{
+		type:"linear",
+		children:[{
+			x:1,
+			z:-3,
+			sz:4,
+			sy:3,
+			materialId:"m1",
+			dragPart:true
+		}]
 	}],
 	materials: {
 		m0: {
