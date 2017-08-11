@@ -209,7 +209,8 @@ var map = {
 		},
 		m1: {
 			type: "L",
-			color: 0xafa862
+			color: 0xafa862,
+			opacity: 0.5,
 		},
 		m2: {
 			type: "L",

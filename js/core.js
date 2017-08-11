@@ -328,35 +328,41 @@ core.createLinearBar=function(item, container,gameWorld){
 		}
 		
 		if(child.dragPart){
-			obj.onDown=function(){
-				group.isDown=true;
-			}
-			obj.onUp=function(){
-				group.isDown=false;
-			}
-			
-			$$.global.canvasDom.addEventListener("mousemove",function(e){
-				if(group.isDown){
-					var rect = $$.global.canvasDom.getBoundingClientRect();
-					_mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
-					_mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
-					_raycaster.setFromCamera( _mouse, gameWorld.camera );
-					console.log(_raycaster)
-				}
+			//var control = new THREE.TransformControls( gameWorld.camera, $$.global.canvasDom );
+//				control.addEventListener( 'change', render );
+				control.attach(obj)
 				
-			});
-			
-			$$.global.canvasDom.addEventListener("touchmove",function(e){
-				_raycaster.setFromCamera( _mouse, gameWorld.camera );
-				var intersects = _raycaster.intersectObjects(group,true);
-				if(group.isDown){
-					var rect = $$.global.canvasDom.getBoundingClientRect();
-					_mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
-					_mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
-					_raycaster.setFromCamera( _mouse, gameWorld.camera );
-					console.log(_raycaster)
-				}
-			});
+				//$$.actionInjections.push(control.update);
+				console.log("???")
+//			obj.onDown=function(){
+//				group.isDown=true;
+//			}
+//			obj.onUp=function(){
+//				group.isDown=false;
+//			}
+//			
+//			$$.global.canvasDom.addEventListener("mousemove",function(e){
+//				if(group.isDown){
+//					var rect = $$.global.canvasDom.getBoundingClientRect();
+//					_mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
+//					_mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
+//					_raycaster.setFromCamera( _mouse, gameWorld.camera );
+//					console.log(_raycaster)
+//				}
+//				
+//			});
+//			
+//			$$.global.canvasDom.addEventListener("touchmove",function(e){
+//				_raycaster.setFromCamera( _mouse, gameWorld.camera );
+//				var intersects = _raycaster.intersectObjects(group,true);
+//				if(group.isDown){
+//					var rect = $$.global.canvasDom.getBoundingClientRect();
+//					_mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
+//					_mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
+//					_raycaster.setFromCamera( _mouse, gameWorld.camera );
+//					console.log(_raycaster)
+//				}
+//			});
 		}
 	}
 	
