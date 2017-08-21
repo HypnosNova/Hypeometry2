@@ -19,8 +19,8 @@ function initMap(){
 	$$.global.renderer.sortObjects = false;
 	
 	
-	control = new THREE.TransformControls( gameWorld.camera, $$.global.canvasDom );
-	control.setMode( "translate" );
-	gameWorld.scene.add( control );
-	$$.actionInjections.push(control.update);
+//	control = new THREE.TransformControls( gameWorld.camera, $$.global.canvasDom );
+//	control.setMode( "translate" );
+//	gameWorld.scene.add( control );
+	
 }
