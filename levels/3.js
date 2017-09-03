@@ -88,7 +88,91 @@ var map = {
 		}]
 	},
 	onGameStart: function() {
-		//core.childrenWithId.turn.gameState = 0;
+		let geometry = new THREE.CylinderBufferGeometry(STEP * 2, STEP*2.15, STEP / 3, 4);
+		let m = core.map.materials.mRoof;
+		let cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 11.66;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 1.7, STEP*2, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 11.99;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 1, STEP*1.7, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 12.33;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.8, STEP*1, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 12.66;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.5, STEP*0.8, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 13;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.15, STEP*0.5, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 13.33;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.01, STEP*0.15, STEP / 3*2, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 13.75;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.leftTower.add(cylinder);
+		
+		geometry = new THREE.CylinderBufferGeometry(STEP * 2, STEP*2.15, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 4.66;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 1.7, STEP*2, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 4.99;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 1, STEP*1.7, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 5.33;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.8, STEP*1, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 5.66;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.5, STEP*0.8, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 6;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.15, STEP*0.5, STEP / 3, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 6.33;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
+		geometry = new THREE.CylinderBufferGeometry(STEP * 0.01, STEP*0.15, STEP / 3*2, 4);
+		m = core.map.materials.mRoof;
+		cylinder = new THREE.Mesh(geometry, m);
+		cylinder.position.y = STEP * 6.75;
+		cylinder.rotation.y = Math.PI/4;
+		core.childrenWithId.rightTower.add(cylinder);
 	},
 	blocks: [{
 		x: -1,
@@ -100,6 +184,30 @@ var map = {
 		y: -4,
 		sz: 11,
 		sy: 7
+	}, {
+		x: -4,
+		z: -4.95,
+		y: 13.25,
+		sx: 0.7,
+		sy: 0.06,
+		materialId: "st",
+		cannotClick: true
+	}, {
+		x: -4,
+		z: -4.95,
+		y: 13,
+		sx: 0.7,
+		sy: 0.06,
+		materialId: "st",
+		cannotClick: true
+	}, {
+		x: -4,
+		z: -4.95,
+		y: 12.75,
+		sx: 0.7,
+		sy: 0.06,
+		materialId: "st",
+		cannotClick: true
 	}, {
 		x: -2,
 		z: -0.95,
@@ -278,7 +386,7 @@ var map = {
 		axis: "z",
 		min: -9,
 		max: -4,
-		z:-5.5,
+		z:-6,
 		y:2.5,
 		x:-1,
 		children: [{
@@ -391,25 +499,17 @@ var map = {
 			dragPart: true,
 		}],
 		onDown:function(){
-			core.mapGraph.removeEdge("p8", "d1", "path0");
-			core.mapGraph.removeEdge("p9", "d4", "path0");
+			core.mapGraph.removeEdge("t4", "v1", "path0");
+			core.mapGraph.removeEdge("t3", "v1", "path0");
 		},
 		onUp:function(){
-//			if(core.childrenWithId.down.position.z==-2.5*STEP){
-//				core.mapGraph.addEdge("p8", "d1", "path0");
-//			}else if(core.childrenWithId.down.position.z==-9.5*STEP){
-//				core.mapGraph.addEdge("p9", "d4", "path0");
-//			}
+			if(core.childrenWithId.ver.position.y==11*STEP){
+				core.mapGraph.addEdge("t4", "v1", "path0");
+			}else if(core.childrenWithId.ver.position.y==7*STEP){
+				core.mapGraph.addEdge("t3", "v1", "path0");
+			}
 		},
 		
-	}, {
-		x: -0.95,
-		z: -13,
-		y: 2.5,
-		sz: 0.7,
-		sy: 0.06,
-		materialId: "st",
-		cannotClick: true
 	}, {
 		x: -0.95,
 		z: -13,
@@ -484,21 +584,56 @@ var map = {
 		x: -5,
 		sy:2
 	}, {
+		type: "roundRect",
+		id: "btn1",
+		sy: 0.6,
+		sx: 0.6,
+		x: -6,
+		y: 12.1,
+		z: -3,
+		rx: Math.PI / 2,
+		materialId: "mRoof",
+		cannotClick: true
+	}, {
 		y: 7.5,
 		z: -3,
 		x: -4,
 		sy:2,
 		sx:3
 	}, {
-		y: 4,
-		z: -6,
+		type:"group",
+		id:"leftTower",
+		ry:Math.PI/2,
+		y: -2,
+		z: -12,
+		x: -12,
+		children:[{
+			sx:3,
+			sy:23,
+			sz:3,
+		},{
+			x:1.5,
+			y:9,
+			z:0,
+			sx:2
+		}]
+		
+	},{
 		x: -6,
-		sx:3,
-		sy:17,
-		sz:3,
-		//------------------------
+		y: 12,
+		z: -3,
+	},{
+		x: -4,
+		y: 13,
+		z: -5,
+	},{
+		x: -4,
+		y: 12,
+		z: -5,
 	},{
 		type:"group",
+		id:"rightTower",
+		ry:-Math.PI/2,
 		y: 6,
 		z: -14,
 		x: -4,
@@ -510,8 +645,28 @@ var map = {
 		},{
 			y:1,
 			z:2,
+			x:-2,
+			sx:5,
+		},{
+			y:2.5,
+			z:0,
 			x:-1,
-			sx:3,
+			sz:3,
+			sy:2
+		},{
+			y:2.5,
+			z:0,
+			x:1,
+			sz:3,
+			sy:2
+		},{
+			y:2.5,
+			z:-1,
+			sy:2
+		},{
+			y:4,
+			sz:3,
+			sx:3
 		}]
 	},{
 		sy:3,
@@ -538,11 +693,11 @@ var map = {
 	materials: {
 		m0: {
 			type: "L",
-			color: 0xdad282
+			color: 0xc6b891
 		},
 		m1: {
 			type: "L",
-			color: 0xafa862,
+			color: 0x748f98,
 //			opacity: 0.3
 		},
 		m2: {
@@ -556,10 +711,9 @@ var map = {
 		},
 		m4: {
 			type: "B",
-			color: 0x222222,
-			type: "B",
+			color: 0x2222ff,
 			//			color: 0xffffff,
-			opacity: 0.5,
+			opacity: 0,
 			//			mapId: "img/null.png"
 		},
 		m5: {
@@ -569,7 +723,7 @@ var map = {
 		},
 		mRoof: {
 			type: "L",
-			color: 0xf7b41f
+			color: 0xb64579
 		},
 		st: {
 			type: "L",
@@ -607,7 +761,7 @@ var map = {
 		distance: 50,
 		lookAt: {
 			x: -1,
-			y: 11,
+			y: 8,
 			z: -6
 		}
 	},
@@ -888,7 +1042,7 @@ var map = {
 			y: 5,
 			z: -2,
 			face: 0,
-			neighbors: ["p22","p20"],
+			neighbors: ["p22","p20","p23"],
 			materialId: "m4",
 		},
 		p22:{
@@ -908,6 +1062,223 @@ var map = {
 			face: 0,
 			neighbors: ["p21"],
 			materialId: "m4",
+			hasCome:function(){
+				core.charactor.position.set(-5*STEP,9*STEP,-4*STEP);
+				new TWEEN.Tween(core.charactor.position).to({
+					x:-5*STEP,
+					y:9*STEP,
+					z:-3*STEP
+				},game.settings.moveSpeed).start().onComplete(function(){
+					core.charactor.currentPath="t1";
+				});
+				
+			}
+		},
+		t1:{
+			id:"t1",
+			x: -5,
+			y: 9,
+			z: -3,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t2"],
+		},
+		t2:{
+			id:"t2",
+			x: -4,
+			y: 9,
+			z: -3,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t1","t3"],
+		},
+		t3:{
+			id:"t3",
+			x: -3,
+			y: 9,
+			z: -3,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t2"],
+		},
+		v1: {
+			id: "v1",
+			parentId:"ver",
+			local:true,
+			x: 0,
+			y: 2,
+			z: 0.5,
+			face: 0,
+			neighbors: ["v2"],
+			materialId: "m4"
+		},
+		v2: {
+			id: "v2",
+			parentId:"ver",
+			local:true,
+			x: 0,
+			y: 2,
+			z: -0.5,
+			face: 0,
+			neighbors: ["v1"],
+			materialId: "m4"
+		},
+		t4:{
+			id:"t4",
+			x: -4,
+			y: 13,
+			z: -4,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t5","t8"],
+			changeSpeed: {
+				"t8": "auto"
+			},
+		},
+		t5:{
+			id:"t5",
+			x: -5,
+			y: 13,
+			z: -4,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t4","t6"],
+		},
+		t6:{
+			id:"t6",
+			x: -6,
+			y: 13,
+			z: -4,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t5","t7"],
+		},
+		t7:{
+			id:"t7",
+			x: -6,
+			y: 13,
+			z: -3,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t6"],
+			hasCome:function(){
+				var lt=core.childrenWithId.leftTower;
+				var rt=core.childrenWithId.rightTower;
+				new TWEEN.Tween(core.childrenWithId.btn1.position).to({y:12.01*STEP},300).start().onComplete(function(){
+					new TWEEN.Tween(lt.rotation).to({y:0},2000).start();
+					new TWEEN.Tween(lt.children[1].position).to({x:2.5*STEP},2000).start();
+					new TWEEN.Tween(rt.rotation).to({y:0},2000).start().onComplete(function(){
+						core.mapGraph.addEdge("t10","t11","path0")
+					});
+				});
+			}
+		},
+		t8:{
+			id:"t8",
+			x: -4,
+			y: 13,
+			z: -4,
+			face: 2,
+			materialId: "m4",
+			neighbors: ["t4","t9"],
+			changeSpeed: {
+				"t4": "auto"
+			},
+		},
+		t9:{
+			id:"t9",
+			x: -4,
+			y: 14,
+			z: -4,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t8","t10"],
+			cannotClick:true
+		},
+		t10:{
+			id:"t10",
+			x: -4,
+			y: 14,
+			z: -5,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t9"],
+		},
+		t11:{
+			id:"t11",
+			x: -4,
+			y: 14,
+			z: -6,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t12"],
+		},
+		t12:{
+			id:"t12",
+			x: -9,
+			y: 8,
+			z: -12,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t11","t13"],
+		},
+		t13:{
+			id:"t13",
+			x: -8,
+			y: 8,
+			z: -12,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t14","t12"],
+		},
+		t14:{
+			id:"t14",
+			x: -7,
+			y: 8,
+			z: -12,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t13","t15"],
+		},
+		t15:{
+			id:"t15",
+			x: -6,
+			y: 8,
+			z: -12,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t14","t16"],
+		},
+		t16:{
+			id:"t16",
+			x: -5,
+			y: 8,
+			z: -12,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t15","t17"],
+		},
+		t17:{
+			id:"t17",
+			x: -4,
+			y: 8,
+			z: -12,
+			face: 0,
+			materialId: "m4",
+			neighbors: ["t16","t18"],
+		},
+		t18:{
+			id:"t18",
+			x: -4,
+			y: 8,
+			z: -13,
+			face: 0,
+			materialId: "m4",
+			neighbors: [],
+			hasCome: function() {
+				core.charactor.walkingPath=[];
+				core.showEndBoard();
+			}
 		},
 	},
 	startPoint: "p1"
