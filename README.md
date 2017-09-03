@@ -9,4 +9,4 @@ https://hypnosnova.github.io/Hypeometry2/level2.html<br>
 https://hypnosnova.github.io/Hypeometry2/level3.html
 <br><br>
 demo截图如下：<br>
-<img src="screenshot/level1.png" style="width:33%"/><img src="screenshot/level2.png" style="width:33%"/><img src="screenshot/level3.png" style="width:33%"/>
+<img src="screenshot/level1.png" style="width:200px"/><img src="screenshot/level2.png" style="200px"/><img src="screenshot/level3.png" style="200px"/>
