@@ -41,19 +41,18 @@ let roundRectGeometry = new THREE.ExtrudeBufferGeometry(roundedRectShape, {
 roundRectGeometry.center();
 
 var cirlceShape = new THREE.Shape();
-cirlceShape.moveTo( 0, 0 );
-cirlceShape.absarc( STEP, STEP, STEP, 0, Math.PI * 2, false );
+cirlceShape.moveTo(0, 0);
+cirlceShape.absarc(STEP, STEP, STEP, 0, Math.PI * 2, false);
 var smileyEye1Path = new THREE.Path();
-smileyEye1Path.moveTo( 0, 0 );
-smileyEye1Path.absarc( STEP, STEP, STEP/2, 0, Math.PI * 2, false );
-cirlceShape.holes.push( smileyEye1Path );
+smileyEye1Path.moveTo(0, 0);
+smileyEye1Path.absarc(STEP, STEP, STEP / 2, 0, Math.PI * 2, false);
+cirlceShape.holes.push(smileyEye1Path);
 let ringGeometry = new THREE.ExtrudeBufferGeometry(cirlceShape, {
 	steps: 1,
 	amount: STEP,
 	bevelEnabled: false
 });
 ringGeometry.center();
-
 
 var core = {};
 core.map = {};
@@ -71,7 +70,7 @@ core.createLevelWorld = function() {
 		core.initMapCamera(world);
 		core.initLevelBoard(world);
 		core.createCharacter(world);
-		if(core.map.background!=null){
+		if(core.map.background != null) {
 			$$.global.renderer.setClearColor(core.map.background);
 		}
 		if(core.map.onGameStart) {
@@ -88,8 +87,8 @@ core.createRing = function(item, m, container) {
 	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	cube.scale.set(item.sx || 1, item.sy || 1, item.sz || 1);
 	container.add(cube);
-	if(item.cannotClick){
-		cube.isPenetrated=true;
+	if(item.cannotClick) {
+		cube.isPenetrated = true;
 	}
 	return cube;
 };
@@ -99,8 +98,8 @@ core.createRoundRect = function(item, m, container) {
 	cube.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
 	cube.scale.set(item.sx || 1, item.sy || 1, item.sz || 1);
 	container.add(cube);
-	if(item.cannotClick){
-		cube.isPenetrated=true;
+	if(item.cannotClick) {
+		cube.isPenetrated = true;
 	}
 	return cube;
 };
@@ -303,14 +302,17 @@ core.createStair = function(item, m, container) {
 	return group;
 };
 
-core.LinearBar=function(item, container,gameWorld){
-	var that=this;
+core.LinearBar = function(item, container, gameWorld) {
+	var that = this;
 	var _mouse = new THREE.Vector2();
 	var _raycaster = new THREE.Raycaster();
 	let group = new THREE.Group();
 	group.position.set(item.x * STEP || 0, item.y * STEP || 0, item.z * STEP || 0);
 	group.rotation.set(item.rx || 0, item.ry || 0, item.rz || 0);
-	this.object=group;
+	this.object = group;
+	that.axis = item.axis || "x";
+	that.min = item.min;
+	that.max = item.max;
 	container.add(group);
 	for(let child of item.children) {
 		let material;
@@ -324,46 +326,46 @@ core.LinearBar=function(item, container,gameWorld){
 		}
 		var obj;
 		if(child.type == "cube") {
-			obj=core.createCube(child, material, group);
+			obj = core.createCube(child, material, group);
 		} else if(child.type == "plane") {
-			obj=core.createPlane(child, material, group);
+			obj = core.createPlane(child, material, group);
 		} else if(item.type == "ground") {
-			obj=core.createGround(item, material, group);
+			obj = core.createGround(item, material, group);
 		} else if(child.type == "tri") {
-			obj=core.createTri(child, material, group);
+			obj = core.createTri(child, material, group);
 		} else if(child.type == "stick") {
-			obj=core.createStick(child, material, group);
+			obj = core.createStick(child, material, group);
 		} else if(child.type == "stair") {
-			obj=core.createStair(child, material, group);
+			obj = core.createStair(child, material, group);
 		} else if(child.type == "turntable") {
-			obj=core.createTurntable(child, group);
+			obj = core.createTurntable(child, group);
 		} else if(child.type == "arc") {
-			obj=core.core.createArc(child, material, group);
+			obj = core.core.createArc(child, material, group);
 		} else if(child.type == "cylinder") {
-			obj=core.createCylinder(child, material, group);
+			obj = core.createCylinder(child, material, group);
 		} else if(child.type == "roof") {
-			obj=core.createRoof(child, child.materialArr, group);
+			obj = core.createRoof(child, child.materialArr, group);
 		} else if(child.type == "roundRect") {
-			obj=core.createRoundRect(child, material, group);
+			obj = core.createRoundRect(child, material, group);
 		} else if(child.type == "ring") {
-			obj=core.createRing(child, material, group);
+			obj = core.createRing(child, material, group);
 		} else if(child.type == "group") {
-			obj=core.createGroup(child, group);
+			obj = core.createGroup(child, group);
 		} else {
-			obj=core.createCube(child, material, group);
+			obj = core.createCube(child, material, group);
 		}
-		
-		if(child.dragPart){
-			obj.onDown=function(){
-				that.hasDown=true;
-				oldX=event.clientX||event.touches[0].clientX;
-				oldY=event.clientY||event.touches[0].clientY;
-				oldPosition={
-					x:group.position.x,
-					y:group.position.y,
-					z:group.position.z,
+
+		if(child.dragPart) {
+			obj.onDown = function() {
+				that.hasDown = true;
+				oldX = event.clientX || event.touches[0].clientX;
+				oldY = event.clientY || event.touches[0].clientY;
+				oldPosition = {
+					x: group.position.x,
+					y: group.position.y,
+					z: group.position.z,
 				};
-				if(item.onDown){
+				if(item.onDown) {
 					item.onDown();
 				}
 			}
@@ -373,41 +375,69 @@ core.LinearBar=function(item, container,gameWorld){
 	$$.global.canvasDom.addEventListener("touchmove", dragMove, false);
 	$$.global.canvasDom.addEventListener("mouseup", dragEnd, false);
 	$$.global.canvasDom.addEventListener("touchend", dragEnd, false);
-	var oldX=0,oldY=0,oldPosition={};
-	
-	function dragEnd(){
-		that.hasDown=false;
-		if(item.onUp){
-			item.onUp();
+	var oldX = 0,
+		oldY = 0,
+		oldPosition = {};
+
+	function dragEnd() {
+		that.hasDown = false;
+		if(that.axis == "z") {
+			var oz = group.position.z;
+			for(var i = item.min; i <= that.max; i++) {
+				if(Math.abs(oz - i * STEP) <= STEP / 2) {
+					new TWEEN.Tween(group.position).to({
+						z: i * STEP
+					}, Math.abs(oz - i * STEP) * 2 / STEP * game.settings.moveSpeed).start().onComplete(function() {
+						if(item.onUp) {
+							item.onUp();
+						}
+					});
+					break;
+				}
+			}
+		} else if(that.axis == "y") {
+			var oy = group.position.y;
+			for(var i = that.min; i <= that.max; i++) {
+				if(Math.abs(oy - i * STEP) <= STEP / 2) {
+					new TWEEN.Tween(group.position).to({
+						y: i * STEP
+					}, Math.abs(oy - i * STEP) * 2 / STEP * game.settings.moveSpeed).start().onComplete(function() {
+						if(item.onUp) {
+							item.onUp();
+						}
+					});
+					break;
+				}
+			}
 		}
 	}
-	
-	function dragMove(e){
-		if(!that.hasDown){
+
+	function dragMove(e) {
+		if(!that.hasDown) {
 			return;
 		}
-		var x=e.clientX||event.touches[0].clientX;
-		var y=e.clientY||event.touches[0].clientY;
-		if(item.axis=="z"){
-			group.position.z=oldPosition.z+(oldX-x)*1.414;
-			if(group.position.z<item.min*STEP){
-				group.position.z=item.min*STEP;
-			}else if(group.position.z>item.max*STEP){
-				group.position.z=item.max*STEP;
+		var x = e.clientX || event.touches[0].clientX;
+		var y = e.clientY || event.touches[0].clientY;
+		if(item.axis == "z") {
+			group.position.z = oldPosition.z + (oldX - x) * 1.414;
+			if(group.position.z < item.min * STEP) {
+				group.position.z = item.min * STEP;
+			} else if(group.position.z > item.max * STEP) {
+				group.position.z = item.max * STEP;
 			}
-		}else if(item.axis=="y"){
-			group.position.y=oldPosition.y+(oldY-y);
-			if(group.position.y<item.min*STEP){
-				group.position.y=item.min*STEP;
-			}else if(group.position.y>item.max*STEP){
-				group.position.y=item.max*STEP;
+		} else if(item.axis == "y") {
+			group.position.y = oldPosition.y + (oldY - y) * 1.2;
+			if(group.position.y < item.min * STEP) {
+				group.position.y = item.min * STEP;
+			} else if(group.position.y > item.max * STEP) {
+				group.position.y = item.max * STEP;
 			}
 		}
-		if(item.onMove){
+		if(item.onMove) {
 			item.onMove();
 		}
 	}
-	
+
 	return group;
 }
 
@@ -1218,7 +1248,7 @@ core.initLevelBoard = function(gameWorld) {
 	ctx.textAlign = "center";
 	for(let item of core.map.levelBoard.info) {
 		if(item.type == "text") {
-			ctx.font = item.weight+ " " + item.size * h + "px " + item.family;
+			ctx.font = item.weight + " " + item.size * h + "px " + item.family;
 			ctx.fillStyle = item.color;
 			let width = ctx.measureText(item.text).width;
 			ctx.fillText(item.text, w / 2, h * item.y);
@@ -1294,7 +1324,7 @@ core.initMapBlocks = function(gameWorld) {
 		} else if(item.type == "ring") {
 			obj = core.createRing(item, material, gameWorld.scene);
 		} else if(item.type == "linear") {
-			obj = new core.LinearBar(item, gameWorld.scene,gameWorld);
+			obj = new core.LinearBar(item, gameWorld.scene, gameWorld);
 		} else if(item.type == "group") {
 			obj = core.createGroup(item, gameWorld.scene);
 		} else {
@@ -1510,26 +1540,26 @@ core.moveCharacter = function(arr) {
 	core.charactor.isWalking = true;
 	nextP = core.map["path" + core.map.currentPath][arr[0]];
 	var vec = new THREE.Vector3(nextP.x * STEP, nextP.y * STEP, nextP.z * STEP);
-	if(nextP.parentId&&!nextP.local) {
-		core.charactor.isLocal=false;
-		core.charactor.parentId=nextP.parentId;
+	if(nextP.parentId && !nextP.local) {
+		core.charactor.isLocal = false;
+		core.charactor.parentId = nextP.parentId;
 		vec = core.childrenWithId[nextP.parentId].localToWorld(vec);
 		$$.global.world.add(core.charactor);
-	}else if(nextP.parentId&&nextP.local){
-		if(!core.charactor.isLocal){
-			core.charactor.parentId=nextP.parentId;
-			var parent=core.childrenWithId[nextP.parentId];
+	} else if(nextP.parentId && nextP.local) {
+		if(!core.charactor.isLocal) {
+			core.charactor.parentId = nextP.parentId;
+			var parent = core.childrenWithId[nextP.parentId];
 			parent.updateMatrixWorld();
-			core.charactor.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
+			core.charactor.applyMatrix(new THREE.Matrix4().getInverse(parent.matrixWorld));
 			parent.add(core.charactor);
-			core.charactor.isLocal=true;
+			core.charactor.isLocal = true;
 		}
-	}else{
-		if(core.charactor.isLocal){
-			core.charactor.isLocal=false;
-			core.charactor.position=core.childrenWithId[core.charactor.parentId].localToWorld(core.charactor.position);
+	} else {
+		if(core.charactor.isLocal) {
+			core.charactor.isLocal = false;
+			core.charactor.position = core.childrenWithId[core.charactor.parentId].localToWorld(core.charactor.position);
 			$$.global.world.add(core.charactor);
-			core.charactor.parentId=null;
+			core.charactor.parentId = null;
 		}
 	}
 	var time = game.settings.moveSpeed;
@@ -1591,7 +1621,7 @@ core.loadMapResource = function(callback) {
 core.PathGraph = function(path) {
 	var that = this;
 	this.neighbors = path;
-	this.addEdge = function(a, b,path) {
+	this.addEdge = function(a, b, path) {
 		//		if(neighbors[u] === undefined) {
 		//			neighbors[u] = [];
 		//		}
