@@ -20,7 +20,8 @@
 			"img/null.png",
 			"levels/2.js",
 			"lib/threeQuery.min.js",
-			"img/level2ground.png"
+			"img/level2ground.png",
+			"levels/3.js"
 		]
 	}
 }

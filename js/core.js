@@ -340,7 +340,7 @@ core.LinearBar = function(item, container, gameWorld) {
 		} else if(child.type == "turntable") {
 			obj = core.createTurntable(child, group);
 		} else if(child.type == "arc") {
-			obj = core.core.createArc(child, material, group);
+			obj = core.createArc(child, material, group);
 		} else if(child.type == "cylinder") {
 			obj = core.createCylinder(child, material, group);
 		} else if(child.type == "roof") {
@@ -1215,7 +1215,7 @@ core.createGroup = function(item, container) {
 		} else if(child.type == "turntable") {
 			core.createTurntable(child, group);
 		} else if(child.type == "arc") {
-			core.core.createArc(child, material, group);
+			core.createArc(child, material, group);
 		} else if(child.type == "cylinder") {
 			core.createCylinder(child, material, group);
 		} else if(child.type == "roof") {
@@ -1406,7 +1406,7 @@ core.showEndBoard = function() {
 	canvas.width = w;
 	canvas.height = h;
 	let ctx = canvas.getContext("2d");
-	ctx.fillStyle = core.map.levelBoard.backgroundColor;
+	ctx.fillStyle = core.map.endBoard.backgroundColor;
 	ctx.fillRect(0, 0, w, h);
 	ctx.textAlign = "center";
 	for(let item of info.info) {
